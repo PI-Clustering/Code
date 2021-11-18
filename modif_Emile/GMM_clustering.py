@@ -76,33 +76,31 @@ def count_labs_props(amount_dict, list_of_distinct_nodes, distinct_labels):
 
     # iterate through each different node
     for node in list_of_distinct_nodes:
-        cur_node = node.split(' ')
 
-        # iterate through each different word found in the node string
-        for word in cur_node:
             
-            # test if the word is a label or a property
-            if word in distinct_labels:
+        # We iterate over each label of the node
+        for word in node[0]:
 
-                # test if the label was already found
-                if word not in labs: 
-                    labs.append(word)
+            # test if the label was already found
+            if word not in labs: 
+                labs.append(word)
 
-                    # increment considering the repeated nodes
-                    values_labs.append(1*amount_dict[node])
-                else:
-                    # increment considering the repeated nodes
-                    values_labs[labs.index(word)]+=(1*amount_dict[node])
+                # increment considering the repeated nodes
+                values_labs.append(1*amount_dict[node])
             else:
-                # test if the property was already found
-                if word not in props:
-                    props.append(word)
+                # increment considering the repeated nodes
+                values_labs[labs.index(word)]+=(1*amount_dict[node])
+         
+        for word in node[1]:
+            # test if the property was already found
+            if word not in props:
+                props.append(word)
 
-                    # increment considering the repeated nodes
-                    values_props.append(1*amount_dict[node])
-                else:
-                    # increment considering the repeated nodes
-                    values_props[props.index(word)]+=(1*amount_dict[node])
+                # increment considering the repeated nodes
+                values_props.append(1*amount_dict[node])
+            else:
+                # increment considering the repeated nodes
+                values_props[props.index(word)]+=(1*amount_dict[node])
 
     return labs,values_labs,props,values_props
 
@@ -156,8 +154,7 @@ def max_labs_props(amount_dict, list_of_distinct_nodes, n, distinct_labels):
         except:
             pass
     
-    s = freq_lab + " " + ' '.join(freq_prop)
-    return s
+    return (tuple(freq_lab),  tuple(freq_prop))
 
 def compute_similarities(list_of_distinct_nodes, ref_node):
     """ Computes the similarity measure value with a reference node for each node in the dataset
@@ -184,7 +181,7 @@ def compute_similarities(list_of_distinct_nodes, ref_node):
     for node in list_of_distinct_nodes:
 
         # get the similarity measure value between a reference node and the current node
-        distance = dice_coefficient(ref_node,node)
+        distance = dist(ref_node,node)
 
         # add the value to the dictionary
         similarities_dict[node] = distance
@@ -332,6 +329,13 @@ def rec_clustering(amount_dict, correct_nodes, distinct_labels, all_clusters, hi
 
     return all_clusters,hierarchy
 
+def dist(a,b):
+    """ Compute a similiarity measure value between two node"""
+    
+    s = len(set(a[0]).intersection(set(b[0]))) + len(set(a[1]).intersection(set(b[1])))
+    
+    return 2*s / (len(a[0]) + len(a[1]) + len(b[0]) + len(b[1]))
+    
 def dice_coefficient(a,b):
     """ Compute the similarity measure value between two strings
 

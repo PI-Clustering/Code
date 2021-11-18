@@ -53,10 +53,10 @@ def preprocessing(driver):
 
 #        labels_properties = labels+properties
 #        labels_properties_str = ' '.join(labels_properties)
-        if labels_properties_str in list_of_distinct_nodes:
+        if (tuple(labels), tuple(properties)) in list_of_distinct_nodes:
             amount_dict[(tuple(labels), tuple(properties))] += node[2]
         else:
-            list_of_distinct_nodes.append(labels_properties_str) 
+            list_of_distinct_nodes.append((tuple(labels), tuple(properties))) 
             amount_dict[(tuple(labels), tuple(properties))] = node[2]
     print(colored("Done.", "green"))
 
