@@ -113,31 +113,28 @@ def rec_storing(distinct_labels,labs_sets,writer,hierarchy_tree, i, parent_id, r
 
     # iterate through each node that forms the cluster
     for node in hierarchy_tree[0]:
-        props_labs = node.split(" ")
 
         cur_labels = set()
         cur_properties = set()
 
         # search for labels and properties in this subtype
         if j == 0:
-            for prop_lab in props_labs:
-                if prop_lab in distinct_labels:
-                    all_labels.add(prop_lab)
-                    always_labels.add(prop_lab)
-                    cur_labels.add(prop_lab)
-                else:
-                    all_properties.add(prop_lab)
-                    always_properties.add(prop_lab)
-                    cur_properties.add(prop_lab)
+            for prop_lab in node[0]:
+                all_labels.add(prop_lab)
+                always_labels.add(prop_lab)
+                cur_labels.add(prop_lab)
+            for prop_lab in node[1]:
+                all_properties.add(prop_lab)
+                always_properties.add(prop_lab)
+                cur_properties.add(prop_lab)
             j+=1
         else:
-            for prop_lab in props_labs:
-                if prop_lab in distinct_labels:
-                    all_labels.add(prop_lab)
-                    cur_labels.add(prop_lab)
-                else:
-                    all_properties.add(prop_lab)
-                    cur_properties.add(prop_lab)
+            for prop_lab in node[0]:
+                all_labels.add(prop_lab)
+                cur_labels.add(prop_lab)
+            for prop_lab in node[1]:
+                all_properties.add(prop_lab)
+                cur_properties.add(prop_lab)
 
         always_labels = always_labels.intersection(cur_labels)
         always_properties = always_properties.intersection(cur_properties)

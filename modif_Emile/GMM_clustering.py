@@ -214,7 +214,7 @@ def iter_gmm(amount_dict, list_of_distinct_nodes, distinct_labels, all_sets_labe
         an element is a string node that was clustered in this cluster
         Its format is : [{'Label1 prop1', 'Label1', 'Label1 prop1 prop2'}, {'Label3', 'Label3 prop1 prop4'}, ...]
     """
-
+    
     # ignore all convergence warnings
     warnings.filterwarnings("ignore")
 
@@ -227,14 +227,14 @@ def iter_gmm(amount_dict, list_of_distinct_nodes, distinct_labels, all_sets_labe
 
         # iterate through each different node
         for node in list_of_distinct_nodes:
-
             if set(lab_set) == set(node[0]):
                 # it has not every labels and just this labels we are in the right place
                 correct_nodes.append(node)
-
+        
         # search for all subclusters
         all_clusters, hierarchy = rec_clustering(amount_dict, correct_nodes, distinct_labels, all_clusters, [set(lab_set),None,None])
         hierarchy_tree.append(hierarchy)
+
     return all_clusters, hierarchy_tree
 
 def rec_clustering(amount_dict, correct_nodes, distinct_labels, all_clusters, hierarchy):
@@ -262,6 +262,7 @@ def rec_clustering(amount_dict, correct_nodes, distinct_labels, all_clusters, hi
     all_clusters : The same all_clusters as in parameters but with new clusters added
     """
 
+    
     # get a reference node
     ref_node = max_labs_props(amount_dict, correct_nodes, 1, distinct_labels)
 
