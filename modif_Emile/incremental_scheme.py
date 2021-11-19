@@ -18,7 +18,7 @@ def add_node(node, hierarchy, tree_of_value, start):
 
 def add_node_hierarchy(node, hierarchy, tree_of_value):
     
-    if type(hierarchy) == type([]):
+    if len(tree_ov_value) == 4:
         s = dist(node, tree_of_value[0])
         if s < tree_of_value[1]:
             return [add_node_hierarchy(node, hierarchy[0], tree_of_value[2]), hierarchy[1]]
