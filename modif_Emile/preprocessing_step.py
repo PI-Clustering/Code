@@ -29,16 +29,6 @@ def preprocessing(driver):
     
     print(colored("Querying neo4j to get all distinct labels:", "yellow"))
     
-"""    with open("test.txt", "r") as f:
-        s = f.read()
-        distinct_nodes = ""
-        for i in s:
-            if i == "\n":
-                distinct_nodes += ", "
-            else:
-                distinct_nodes += i
-        
-        distinct_nodes = eval(distinct_nodes)[0]"""
     distinct_nodes = [(['Comment'], ['browserUsed', 'content', 'creationDate', 'id', 'length', 'locationIP'], 2052169), (['Organisation'], ['id', 'name', 'type', 'url'], 7955), (['Post'], ['browserUsed', 'content', 'creationDate', 'id', 'language', 'length', 'locationIP'], 206972), (['Post'], ['browserUsed', 'creationDate', 'id', 'imageFile', 'length', 'locationIP'], 796633), (['Tag'], ['id', 'name', 'url'], 16080), (['TagClass'], ['id', 'name', 'url'], 71), (['Person'], ['birthday', 'browserUsed', 'creationDate', 'firstName', 'gender', 'id', 'lastName', 'locationIP'], 9892), (['Place'], ['id', 'name', 'type', 'url'], 1460), (['Forum'], ['creationDate', 'id', 'title'], 90492)]
     
     
