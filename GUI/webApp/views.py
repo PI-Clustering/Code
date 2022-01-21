@@ -54,11 +54,10 @@ class Index(View):
         # print(motoghayer)
 
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
-            'books': Book.objects.all(),
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -71,10 +70,10 @@ class Dashboard(View):
 
     def get(self, request):
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -88,10 +87,10 @@ class FAQ(View):
 
     def get(self, request):
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -105,10 +104,10 @@ class About_us(View):
 
     def get(self, request):
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -121,10 +120,10 @@ class Projects(View):
 
     def get(self, request):
         MyVar = {
-            'khar': 'jkbkjkjhj',
-            'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -134,10 +133,10 @@ class Method1(View):
 
     def get(self, request):
         MyVar = {
-            'khar': 'hjhj',
-            'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -146,10 +145,10 @@ class Method2(View):
 
     def get(self, request):
         MyVar = {
-            'khar': 'something:)))',
-            'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
