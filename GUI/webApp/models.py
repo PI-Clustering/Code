@@ -9,5 +9,6 @@ class Book(models.Model):
         return self.Name + str(self.ISBN)
 
 
-
-# Create your models here.
+# class Movies(models.Model):
+#     file = models.FileField(upload_to='documents/', None=True)
+#     image = models.ImageField(upload_to='images/', None=True)

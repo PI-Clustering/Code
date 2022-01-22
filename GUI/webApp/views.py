@@ -6,8 +6,23 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
 from .models import Book
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from .forms import UploadFileForm
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from django import forms
+# from .models import Document
+# from .forms import DocumentForm
+from django.shortcuts import render
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
-
+def handle_uploaded_file(f):
+    with open('some/file/name.txt', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 class Index(View):
     template_name = 'webApp/Home.html'
 
@@ -39,11 +54,10 @@ class Index(View):
         # print(motoghayer)
 
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk', 'chai'],
-            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
-            'books': Book.objects.all(),
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -56,10 +70,10 @@ class Dashboard(View):
 
     def get(self, request):
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk', 'chai'],
-            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -73,10 +87,10 @@ class FAQ(View):
 
     def get(self, request):
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk', 'chai'],
-            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -89,10 +103,10 @@ class About_us(View):
 
     def get(self, request):
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk', 'chai'],
-            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -105,10 +119,10 @@ class Projects(View):
 
     def get(self, request):
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk', 'chai'],
-            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -119,10 +133,10 @@ class Method1(View):
 
     def get(self, request):
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk', 'chai'],
-            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -133,14 +147,10 @@ class Method2(View):
 
     def get(self, request):
         MyVar = {
-            'khar': '',
-            'arman': 'khar ast',
-            'hhhh': ['keyk', 'chai'],
-            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
-
-        }
-        return render(request, self.template_name, MyVar)
-
+            'key1': 'value1',
+            'key2': 'value2',
+            'key3': ['value3', 'value4'],
+            'key4' : ['value5', 'value6', 'value7', 'value8'],
 
 class RunQuery(View):
     template_name = 'webApp/RunQuery.html'
@@ -148,4 +158,14 @@ class RunQuery(View):
     def get(self, request):
         data = {
         }
-        return render(request, self.template_name, data)
+        return render(request, self.template_name, MyVar)
+    def simple_upload(self, request):
+        if request.method == 'POST' and request.FILES['myfile']:
+            myfile = request.FILES['myfile']
+            fs = FileSystemStorage()
+            filename = fs.save(myfile.name, myfile)
+            uploaded_file_url = fs.url(filename)
+            return render(request, self.template_name, {
+            'uploaded_file_url': uploaded_file_url
+        })
+        return render(request, self.template_name)
