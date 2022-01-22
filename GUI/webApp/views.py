@@ -15,7 +15,7 @@ class Index(View):
         books = Book.objects.filter(Name='fatemeh')
         #book1 = Book.objects.get(Name='asghar2')
         # print(books)
-        #print(books[0].id)
+        # print(books[0].id)
         # mybook = books[0]
         # mybook.Name = 'kobra'
         # mybook.save()
@@ -41,7 +41,7 @@ class Index(View):
         MyVar = {
             'khar': '',
             'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
+            'hhhh': ['keyk', 'chai'],
             'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
             'books': Book.objects.all(),
 
@@ -58,8 +58,8 @@ class Dashboard(View):
         MyVar = {
             'khar': '',
             'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'hhhh': ['keyk', 'chai'],
+            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -75,14 +75,13 @@ class FAQ(View):
         MyVar = {
             'khar': '',
             'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'hhhh': ['keyk', 'chai'],
+            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
 
         }
         return render(request, self.template_name, MyVar)
 
 #---------------------About us-------------------------#
-
 
 
 class About_us(View):
@@ -92,8 +91,8 @@ class About_us(View):
         MyVar = {
             'khar': '',
             'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'hhhh': ['keyk', 'chai'],
+            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -108,11 +107,12 @@ class Projects(View):
         MyVar = {
             'khar': '',
             'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'hhhh': ['keyk', 'chai'],
+            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
 
         }
         return render(request, self.template_name, MyVar)
+
 
 class Method1(View):
     template_name = 'webApp/Method1.html'
@@ -121,11 +121,13 @@ class Method1(View):
         MyVar = {
             'khar': '',
             'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'hhhh': ['keyk', 'chai'],
+            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
 
         }
         return render(request, self.template_name, MyVar)
+
+
 class Method2(View):
     template_name = 'webApp/Method2.html'
 
@@ -133,8 +135,17 @@ class Method2(View):
         MyVar = {
             'khar': '',
             'arman': 'khar ast',
-            'hhhh': ['keyk','chai'],
-            'navbar' : ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
+            'hhhh': ['keyk', 'chai'],
+            'navbar': ['Arman', 'Fatemeh', 'Rasoul', 'cake', 'latte'],
 
         }
         return render(request, self.template_name, MyVar)
+
+
+class RunQuery(View):
+    template_name = 'webApp/RunQuery.html'
+
+    def get(self, request):
+        data = {
+        }
+        return render(request, self.template_name, data)
