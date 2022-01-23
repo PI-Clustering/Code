@@ -1,6 +1,19 @@
 from neo4j import GraphDatabase
 import os
 import time
+from random import randint
+from ..models import Benchmark
+
+
+def get_benchmark(algo, dataset):
+    time = randint(20, 50)
+    size = randint(500, 1000)
+    bm = {
+        'time': time,
+        'size': size,
+        'algo': algo
+    }
+    return bm
 
 
 class HelloWorldExample:

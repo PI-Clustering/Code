@@ -32,7 +32,13 @@
                 <title>Neo4j Clustering Algos</title>
                 <h1>It's not beautiful, but it works</h1>
                 <!-- Read about sliders: https://jqueryui.com/slider/ -->
-                <form action="/" id="searchForm">
+                <form action="/your-name/" method="post">
+                    <label for="your_name">Your name: </label>
+                    <input id="your_name" type="text" name="your_name" value="{{ current_name }}">
+                    <input type="submit" value="OK">
+                </form>
+                
+                <form action="/webApp/HitDB/" method="post" searchForm">
 
                     <h3> Select a database </h3>
                     <select name="db-select" id="db-select">

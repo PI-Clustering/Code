@@ -1,34 +1,51 @@
-from django.shortcuts import render
-
 # Create your views here.
-
-# Create your views here.
+from curses import raw
+from math import floor
 from django.http import HttpResponse
 from django.views import View
-from .models import Book
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from .forms import UploadFileForm
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django import forms
-# from .models import Document
-# from .forms import DocumentForm
 from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
+
+import csv
+from .scripts.driver import get_benchmark
+from .models import Book, Benchmark
+from .forms import UploadFileForm, TimerForm
+
+
+def some_view(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(
+        content_type='text/csv',
+        headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+    )
+
+    writer = csv.writer(response)
+    writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
+    writer.writerow(['Second row', 'A', 'B', 'C',
+                    '"Testing"', "Here's a quote"])
+
+    return response
+
 
 def handle_uploaded_file(f):
     with open('some/file/name.txt', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
+
+
 class Index(View):
     template_name = 'webApp/Home.html'
 
     def get(self, request):
         books = Book.objects.filter(Name='fatemeh')
-        #book1 = Book.objects.get(Name='asghar2')
+        # book1 = Book.objects.get(Name='asghar2')
         # print(books)
         # print(books[0].id)
         # mybook = books[0]
@@ -57,7 +74,7 @@ class Index(View):
             'key1': 'value1',
             'key2': 'value2',
             'key3': ['value3', 'value4'],
-            'key4' : ['value5', 'value6', 'value7', 'value8'],
+            'key4': ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -73,7 +90,7 @@ class Dashboard(View):
             'key1': 'value1',
             'key2': 'value2',
             'key3': ['value3', 'value4'],
-            'key4' : ['value5', 'value6', 'value7', 'value8'],
+            'key4': ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -90,7 +107,7 @@ class FAQ(View):
             'key1': 'value1',
             'key2': 'value2',
             'key3': ['value3', 'value4'],
-            'key4' : ['value5', 'value6', 'value7', 'value8'],
+            'key4': ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -106,7 +123,7 @@ class About_us(View):
             'key1': 'value1',
             'key2': 'value2',
             'key3': ['value3', 'value4'],
-            'key4' : ['value5', 'value6', 'value7', 'value8'],
+            'key4': ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -122,7 +139,7 @@ class Projects(View):
             'key1': 'value1',
             'key2': 'value2',
             'key3': ['value3', 'value4'],
-            'key4' : ['value5', 'value6', 'value7', 'value8'],
+            'key4': ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -136,7 +153,7 @@ class Method1(View):
             'key1': 'value1',
             'key2': 'value2',
             'key3': ['value3', 'value4'],
-            'key4' : ['value5', 'value6', 'value7', 'value8'],
+            'key4': ['value5', 'value6', 'value7', 'value8'],
 
         }
         return render(request, self.template_name, MyVar)
@@ -150,15 +167,10 @@ class Method2(View):
             'key1': 'value1',
             'key2': 'value2',
             'key3': ['value3', 'value4'],
-            'key4' : ['value5', 'value6', 'value7', 'value8'],
-
-class RunQuery(View):
-    template_name = 'webApp/RunQuery.html'
-
-    def get(self, request):
-        data = {
+            'key4': ['value5', 'value6', 'value7', 'value8'],
         }
         return render(request, self.template_name, MyVar)
+
     def simple_upload(self, request):
         if request.method == 'POST' and request.FILES['myfile']:
             myfile = request.FILES['myfile']
@@ -166,6 +178,38 @@ class RunQuery(View):
             filename = fs.save(myfile.name, myfile)
             uploaded_file_url = fs.url(filename)
             return render(request, self.template_name, {
-            'uploaded_file_url': uploaded_file_url
-        })
+                'uploaded_file_url': uploaded_file_url
+            })
         return render(request, self.template_name)
+
+
+def NeoQuery(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = TimerForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            dataset = form.cleaned_data["dataset"]
+            algo = form.cleaned_data["algo"][0]
+            # execute query on Neo...
+            bm = get_benchmark(dataset, algo)
+            Benchmark.objects.create(
+                algo_type=bm['algo'], size=bm['size'], run_time=bm['time'])
+            # redirect to a new URL:
+            return HttpResponseRedirect('/webApp/Benchmark')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = TimerForm()
+
+    return render(request, 'webApp/form_time.html', {'form': form})
+
+
+# mapping parameters to the url doesn't seem like the correct approach here
+def Benchmarks(request):
+
+    bms = Benchmark.objects.all()
+
+    return render(request, "webApp/benchmarks.html", {'bms': bms})
