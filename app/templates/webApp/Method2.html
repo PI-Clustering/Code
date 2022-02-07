@@ -11,19 +11,66 @@
 
 
 {% block content %}
-   <div class="right_col" role="main">
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="myfile">
-        <button type="submit">Upload</button>
-    </form>
+    <div class="right_col" role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                <div class="x_title">
+                    <h2> Upload your Graph Schema!</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="x_content">
 
-    {% if uploaded_file_url %}
-        <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
-    {% endif %}
+
+                   <form data-parsley-validate
+                         class="form-horizontal form-label-left" method="post" enctype="multipart/form-data">
+                       {% csrf_token %}
+                       <div class="form-group">
+{#                           <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Name#}
+{#                               {% comment %} <span class="required">*</span> {% endcomment %}#}
+{#                           </label>#}
+{#                           <div class="col-md-6 col-sm-6 col-xs-12">#}
+{#                           <label class=" col-md-3 col-sm-3 col-xs-12">Name:</label>#}
+                             <div class="col-md-6 col-sm-6">
+                               {{ server_form.description }}
+                           </div>
+                       </div>
+                       <div class="form-group">
+{#                           <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">#}
+{#                               {% comment %} <span class="required">*</span> {% endcomment %}#}
+{#                           </label>#}
+{#                           <label for="formFile" class="form-label">jsdfkjsdbfkj</label>#}
+{#                           <div class="col-md-6 col-sm-6 col-xs-12">#}
+                           <div class="col-md-6 col-sm-6">
+                               {{ server_form.document }}
+                           </div>
+                       </div>
+
+        {#               <button type="submit" >Upload</button>#}
+
+                       <div class="form-group">
+{#                           <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">#}
+{#                               {% comment %} <span class="required">*</span> {% endcomment %}#}
+{#                           </label>#}
+                           <div class="col-md-6 col-sm-6">
+                               <button type="submit" class="btn btn-success" >upload</button>
+
+        {#                       <a href="{% url 'Servers:Servers' %}" class="btn btn-warning">Back</a>#}
+                           </div>
+                       </div>
+                   </form>
+                    <p><a class="col-md-6 col-sm-6 col-xs-12" href="{% url "webApp:Method2" %}">Return to home</a></p>
+
+
 
 {#    <p><a href="{% url 'Method2.html' %}">Return to home</a></p>#}
    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock content %}
 
 
