@@ -6,7 +6,7 @@ from threading import main_thread
 
 from numpy.core.arrayprint import DatetimeFormat
 
-from node import Cluster, Node
+from .node import Cluster, Node
 
 def storing(cluster,schema):
 

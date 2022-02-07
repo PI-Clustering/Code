@@ -3,7 +3,7 @@
 ##### Imports
 import random
 from termcolor import colored
-from node import Graph, Node
+from .node import Graph, Node
 from math import ceil
 
 

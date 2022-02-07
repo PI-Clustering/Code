@@ -9,7 +9,7 @@ import math
 import hdbscan
 from time import sleep
 
-from node import Node, Graph, Cluster
+from .node import Node, Graph, Cluster
 
 def clustering(graph):
     cluster = Cluster("Main")

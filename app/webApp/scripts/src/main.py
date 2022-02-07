@@ -9,11 +9,11 @@ import time
 from neo4j import GraphDatabase
 
 ### File imports
-from lecture_graph import lecture_graph
-from node import Node, Graph, Cluster
-from clustering_algo import clustering
-from sampling import sampling
-from storing import storing
+from .lecture_graph import lecture_graph
+from .node import Node, Graph, Cluster
+from .clustering_algo import clustering
+from .sampling import sampling
+from .storing import storing
 
 
 def algorithm_script():

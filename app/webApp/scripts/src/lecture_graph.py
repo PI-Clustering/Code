@@ -4,8 +4,8 @@
 from termcolor import colored
 
 #### File import
-from debug import printb
-from node import Graph, Node
+from .debug import printb
+from .node import Graph, Node
 from time import time
 
 def lecture_graph(driver):

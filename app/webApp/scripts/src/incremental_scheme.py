@@ -1,6 +1,6 @@
 from sklearn.semi_supervised import LabelSpreading
-from clustering_algo import *
-from node import *
+from .clustering_algo import *
+from .node import *
 from copy import deepcopy
 
 def add_node(cluster, node):
