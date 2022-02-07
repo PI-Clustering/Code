@@ -1,22 +1,25 @@
 from neo4j import GraphDatabase
+from neo4j import Query
 import os
 import time
 from random import randint
-from ..models import Benchmark
 
 
-def get_benchmark(algo, dataset):
+def get_benchmark(driver, algo, dataset):
     time = randint(20, 50)
     size = randint(500, 1000)
+    results = driver.get_result("hello, world")
     bm = {
         'time': time,
         'size': size,
-        'algo': algo
+        'algo': algo,
+        'name': results[0]
     }
+    print(f"result is {bm}")
     return bm
 
 
-class HelloWorldExample:
+class QueryBuilder:
 
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
@@ -24,19 +27,26 @@ class HelloWorldExample:
     def close(self):
         self.driver.close()
 
-    def print_result(self, message):
+    def get_result(self, message):
         with self.driver.session() as session:
             t1 = time.perf_counter()
-            greeting = session.write_transaction(
-                self._do_query, message)
-            print(greeting)
+            return session.read_transaction(self._do_query, message)
+            # evaluate
 
     @staticmethod
-    def _do_query(tx, message):
-        print(message)
-        result = tx.run(
-            "MATCH (n)-[r]-(m) RETURN n,r,m LIMIT 1000", message=message)
-        return result.single()[0]
+    def _do_query(tx, person_name):
+        query1 = (
+            "MATCH (p:Person) "
+            "WHERE p.name = $person_name "
+            "RETURN p.name AS name"
+        )
+        query2 = (
+            "MATCH (n:Person)-[r]-(m) "
+            "RETURN n,r,m LIMIT 5"
+        )
+        # result = tx.run(query1, person_name=person_name)
+        result = tx.run(query2, person_name=person_name)
+        return [record["n"]["firstName"] for record in result]
 
 
 if __name__ == "__main__":
@@ -47,6 +57,6 @@ if __name__ == "__main__":
     database = os.getenv("NEO4J_DATABASE", "neo4j")
     port = os.getenv("PORT", 8080)
 
-    greeter = HelloWorldExample(url, username, password)
-    greeter.print_result("hello, world")
-    greeter.close()
+    driver = QueryBuilder(url, username, password)
+    get_benchmark(driver, "kmeans", "LDBC")
+    driver.close()

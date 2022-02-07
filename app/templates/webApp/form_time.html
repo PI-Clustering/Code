@@ -1,5 +1,30 @@
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
+{% extends "webApp/base_site.html" %}
+{% block title %}About us{% endblock %}
+
+{% block stylesheets %}
+{{ block.super }}
+
+
+
+{% endblock stylesheets %}
+
+
+{% block content %}
+<div class="right_col" role="main">
+    <title>Submit query</title>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{% endblock content %}
+
+
+
+{% block javascripts %}
+{{ block.super}}
+
+
+
+{% endblock javascripts %}

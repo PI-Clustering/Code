@@ -194,7 +194,9 @@ def NeoQuery(request):
             dataset = form.cleaned_data["dataset"]
             algo = form.cleaned_data["algo"][0]
             # execute query on Neo...
-            bm = get_benchmark(dataset, algo)
+            # this now gets data back from neo - start here
+            bm = get_benchmark(dataset, algo, None)
+
             Benchmark.objects.create(
                 algo_type=bm['algo'], size=bm['size'], run_time=bm['time'])
             # redirect to a new URL:
