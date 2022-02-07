@@ -1,6 +1,8 @@
+from shelve import DbfilenameShelf
 from django import forms
 # from .models import Document
 from .models import Document
+
 
 class UploadFileForm(forms.Form):
     title = forms.CharField(max_length=50)
@@ -11,20 +13,22 @@ DATASET_CHOICES = [
     ('ldbc', 'LDBC'),
     ('covid-19', 'Covid 19'),
 ]
+ALGO_CHOICES = [('param1', 'display name 1'), ('param2', 'display name 2')]
 
 
-class TimerForm(forms.Form):
-    algo = forms.CharField(label='Algo', max_length=20)
-    dataset = forms.MultipleChoiceField(
+class ParametersForm(forms.Form):
+    algo = forms.ChoiceField(
         required=True,
         widget=forms.CheckboxSelectMultiple,
-        choices=DATASET_CHOICES,
+        choices=ALGO_CHOICES,
     )
 
 # class DocumentForm(forms.ModelForm):
 #     class Meta:
 #         model = Document
 #         fields = ('description', 'document', )
+
+
 class DocumentForm(forms.ModelForm):
     # global Settings_Apify
     class Meta:
@@ -34,5 +38,7 @@ class DocumentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DocumentForm, self).__init__(*args, **kwargs)
-        self.fields['description'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Name:'})
-        self.fields['document'].widget.attrs.update({'class': 'form-file', 'type': 'file', 'id': 'formFile'})
+        self.fields['description'].widget.attrs.update(
+            {'class': 'form-control', 'placeholder': 'Name:'})
+        self.fields['document'].widget.attrs.update(
+            {'class': 'form-file', 'type': 'file', 'id': 'formFile'})
