@@ -12,26 +12,26 @@ from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
-
+from .forms  import DocumentForm
 import csv
-from .scripts.driver import get_benchmark
+#from .scripts.driver import get_benchmark
 from .models import Book, Benchmark
 from .forms import UploadFileForm, TimerForm
 
 
-def some_view(request):
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(
-        content_type='text/csv',
-        headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
-    )
-
-    writer = csv.writer(response)
-    writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
-    writer.writerow(['Second row', 'A', 'B', 'C',
-                    '"Testing"', "Here's a quote"])
-
-    return response
+# def some_view(request):
+#     # Create the HttpResponse object with the appropriate CSV header.
+#     response = HttpResponse(
+#         content_type='text/csv',
+#         headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
+#     )
+#
+#     writer = csv.writer(response)
+#     writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
+#     writer.writerow(['Second row', 'A', 'B', 'C',
+#                     '"Testing"', "Here's a quote"])
+#
+#     return response
 
 
 def handle_uploaded_file(f):
@@ -161,26 +161,44 @@ class Method1(View):
 
 class Method2(View):
     template_name = 'webApp/Method2.html'
-
     def get(self, request):
+        server_form = DocumentForm()
         MyVar = {
             'key1': 'value1',
             'key2': 'value2',
             'key3': ['value3', 'value4'],
             'key4': ['value5', 'value6', 'value7', 'value8'],
         }
-        return render(request, self.template_name, MyVar)
+        return render(request, self.template_name, {'server_form': server_form, 'MyVar': MyVar})
 
-    def simple_upload(self, request):
-        if request.method == 'POST' and request.FILES['myfile']:
-            myfile = request.FILES['myfile']
-            fs = FileSystemStorage()
-            filename = fs.save(myfile.name, myfile)
-            uploaded_file_url = fs.url(filename)
-            return render(request, self.template_name, {
-                'uploaded_file_url': uploaded_file_url
-            })
-        return render(request, self.template_name)
+
+        # return render(request, self.template_name, MyVar)
+
+    # def simple_upload(self, request):
+    #     if request.method == 'POST' and request.FILES['myfile']:
+    #         myfile = request.FILES['myfile']
+    #         fs = FileSystemStorage()
+    #         filename = fs.save(myfile.name, myfile)
+    #         uploaded_file_url = fs.url(filename)
+    #         return render(request, self.template_name, {
+    #             'uploaded_file_url': uploaded_file_url
+    #         })
+    #     return render(request, self.template_name)
+    def post(self, request):
+        if request.method == 'POST':
+            print("hi")
+            form = DocumentForm(request.POST, request.FILES)
+            print(form["document"])
+            if form.is_valid():
+                print('hi2')
+                form.save()
+                return redirect("webApp:Method1")
+        else:
+            form = DocumentForm()
+        return render(request, self.template_name, {
+        'form': form
+    })
+
 
 
 def NeoQuery(request):
