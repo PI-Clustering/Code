@@ -16,6 +16,6 @@ urlpatterns = [
     path('About_us/', views.About_us.as_view(), name='About_us'),
     path('Method1/', views.Method1.as_view(), name='Method1'),
     path('Method2/', views.Method2.as_view(), name='Method2'),
-    path('RunQuery/', views.NeoQuery, name='RunQuery'),
+    path('RunQuery/', views.NeoQuery),
     path('Benchmark/', views.Benchmarks),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
