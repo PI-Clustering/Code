@@ -17,16 +17,14 @@ ALGO_CHOICES = [('param1', 'display name 1'), ('param2', 'display name 2')]
 
 
 class ParametersForm(forms.Form):
+    dataset = forms.ChoiceField(
+        required=True,
+        choices=DATASET_CHOICES,
+    )
     algo = forms.ChoiceField(
         required=True,
-        widget=forms.CheckboxSelectMultiple,
         choices=ALGO_CHOICES,
     )
-
-# class DocumentForm(forms.ModelForm):
-#     class Meta:
-#         model = Document
-#         fields = ('description', 'document', )
 
 
 class DocumentForm(forms.ModelForm):

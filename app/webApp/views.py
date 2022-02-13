@@ -1,6 +1,7 @@
 # Create your views here.
 from curses import raw
 from math import floor
+from operator import mod
 from django.http import HttpResponse
 from django.views import View
 from django.http import HttpResponseRedirect
@@ -15,7 +16,7 @@ from django.http import HttpResponse
 
 import csv
 from .scripts.driver import get_benchmark
-from .models import Book, Benchmark
+from .models import Benchmark
 from .forms import UploadFileForm, ParametersForm
 from .scripts.src.main import algorithm_script
 
@@ -45,40 +46,7 @@ class Index(View):
     template_name = 'webApp/Home.html'
 
     def get(self, request):
-        books = Book.objects.filter(Name='fatemeh')
-        # book1 = Book.objects.get(Name='asghar2')
-        # print(books)
-        # print(books[0].id)
-        # mybook = books[0]
-        # mybook.Name = 'kobra'
-        # mybook.save()
-        # print(mybook)
-        # books[0].Name = 'fatemeh' it doesn't fucking work!!!!
-        # books[0].save()
-        # for i in books:
-        #     i.Name = 'fatemeh'
-        #     i.save()
-        # print(Book.objects.get(id=Book.objects.filter(Name='sara')[0].id))
-        # book2 = Book.objects.get(id=Book.objects.filter(Name='sara')[0].id)
-        # # book2.Name='sara'
-        # # book2.save()
-        # book2.delete()
-        # book3 = Book(Name='arman', ISBN=987)
-        # print(book3.id)
-        # # book3.save()
-        # id1 = Book.objects.create(Name='dfghj',ISBN=5678).id
-        # print(id1)
-        # motoghayer = Book.objects.get_or_create(Name='khar')
-        # print(motoghayer)
-
-        MyVar = {
-            'key1': 'value1',
-            'key2': 'value2',
-            'key3': ['value3', 'value4'],
-            'key4': ['value5', 'value6', 'value7', 'value8'],
-
-        }
-        return render(request, self.template_name, MyVar)
+        return render(request, self.template_name, None)
 
 #----------------------Dashboard----------------------------#
 
@@ -192,9 +160,12 @@ def NeoQuery(request):
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
-            algo = form.cleaned_data["algo"][0]
+            algo = form.cleaned_data["algo"]
+            dataset = form.cleaned_data["dataset"]
             # execute query on Neo...
-            algorithm_script()
+            # make this async
+            results = algorithm_script(dataset, algo)
+
             # bm = get_benchmark(algo)
             # Benchmark.objects.create(
             # algo_type = bm['algo'], size = bm['size'], run_time = bm['time'])

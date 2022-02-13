@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Book, Document
+from .models import Document, Benchmark
 
-admin.site.register(Book)
 # Register your models here.
+admin.site.register(Benchmark)
 admin.site.register(Document)

@@ -1,6 +1,7 @@
 """ Main script to infer a PG schema of any database using a clustering method """
 
 # Imports
+from typing import Dict
 from termcolor import colored
 import csv
 import time
@@ -16,7 +17,7 @@ from .sampling import sampling
 from .storing import storing
 
 
-def algorithm_script():
+def algorithm_script(dataset: str, algo: str) -> Dict[str, float]:
     print(colored("Schema inference using Gaussian Mixture Model clustering on PG\n", "red"))
 
     # Inputs
@@ -74,3 +75,8 @@ def algorithm_script():
     step3 = t3f - t3  # time to complete step 3
     print(colored("Writing done.", "green"))
     print("Step 3: Identifying subtypes and storing to file was completed in", step3, "s")
+    return {
+        "t_pre": step1,
+        "t_cluster": step2,
+        "t_write": step3,
+    }
