@@ -10,12 +10,13 @@ from . import views
 app_name = "webApp"
 urlpatterns = [
     path('', views.Index.as_view(), name='Home'),
-    path('Dashboard/', views.Dashboard.as_view(), name='Dashboard'),
+    path('Dashboard/', views.Dashboard, name='Dashboard'),
+    path('Results/', views.Results, name='Results'),
+    path('GetChartData/', views.get_chart_data),
+    path('Submit/', views.RunAlgo, name='Submit'),
     path('Projects/', views.Projects.as_view(), name='Projects'),
     path('FAQ/', views.FAQ.as_view(), name='FAQ'),
     path('About_us/', views.About_us.as_view(), name='About_us'),
     path('Method1/', views.Method1.as_view(), name='Method1'),
     path('Method2/', views.Method2.as_view(), name='Method2'),
-    path('RunQuery/', views.NeoQuery),
-    path('Benchmark/', views.Benchmarks),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

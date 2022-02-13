@@ -17,7 +17,7 @@ from .sampling import sampling
 from .storing import storing
 
 
-def algorithm_script(dataset: str, algo: str) -> Dict[str, float]:
+def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print(colored("Schema inference using Gaussian Mixture Model clustering on PG\n", "red"))
 
     # Inputs

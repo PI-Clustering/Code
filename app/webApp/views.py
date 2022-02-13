@@ -2,6 +2,7 @@
 from curses import raw
 from math import floor
 from operator import mod
+import random
 from django.http import HttpResponse
 from django.views import View
 from django.http import HttpResponseRedirect
@@ -12,7 +13,7 @@ from django import forms
 from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 import csv
 from .scripts.driver import get_benchmark
@@ -152,25 +153,31 @@ class Method2(View):
         return render(request, self.template_name)
 
 
-def NeoQuery(request):
-    # if this is a POST request we need to process the form data
+def AddDummyData():
+    for _ in range(50):
+        Benchmark.objects.create(
+            algo_type=random.choice(
+                ["K-Means", "Mean Shift", "DBSCAN"]),
+            size=50,
+            t_pre=random.uniform(0, 10),
+            t_cluster=random.uniform(10, 50),
+            t_write=random.uniform(10, 12)
+        )
+
+
+def RunAlgo(request):
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = ParametersForm(request.POST)
-        # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            algo = form.cleaned_data["algo"]
-            dataset = form.cleaned_data["dataset"]
+            data = form.cleaned_data
             # execute query on Neo...
             # make this async
-            results = algorithm_script(dataset, algo)
-
-            # bm = get_benchmark(algo)
-            # Benchmark.objects.create(
+            # results = algorithm_script(data)
+            # Create entry in database
             # algo_type = bm['algo'], size = bm['size'], run_time = bm['time'])
+            # AddDummyData()
             # redirect to a new URL:
-            return HttpResponseRedirect('/webApp/Benchmark')
+            return HttpResponseRedirect('/Results')
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -179,9 +186,33 @@ def NeoQuery(request):
     return render(request, 'webApp/form_time.html', {'form': form})
 
 
-# mapping parameters to the url doesn't seem like the correct approach here
-def Benchmarks(request):
+def Dashboard(request):
 
-    bms = Benchmark.objects.all()
+    return render(request, "webApp/dashboard.html")
 
-    return render(request, "webApp/benchmarks.html", {'bms': bms})
+
+def get_chart_data(request):
+
+    labels = []
+    data = []
+
+    # https://simpleisbetterthancomplex.com/tutorial/2020/01/19/how-to-use-chart-js-with-django.html
+
+    # bms = Benchmark.objects.all()
+    # queryset = Benchmark.objects.values('algo_type').annotate(
+    #     country_population=Sum('population')).order_by('-country_population')
+    # for entry in queryset:
+    #     labels.append(entry['country__name'])
+    #     data.append(entry['country_population'])
+
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
+
+
+def Results(request):
+
+    bms = Benchmark.objects.all()[:20]
+
+    return render(request, "webApp/results.html", {'bms': bms})
