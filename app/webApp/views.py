@@ -1,6 +1,8 @@
 # Create your views here.
 from curses import raw
 from math import floor
+from operator import mod
+import random
 from django.http import HttpResponse
 from django.views import View
 from django.http import HttpResponseRedirect
@@ -11,11 +13,11 @@ from django import forms
 from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 import csv
 from .scripts.driver import get_benchmark
-from .models import Book, Benchmark
+from .models import Benchmark
 from .forms import UploadFileForm, ParametersForm
 from .scripts.src.main import algorithm_script
 
@@ -45,40 +47,7 @@ class Index(View):
     template_name = 'webApp/Home.html'
 
     def get(self, request):
-        books = Book.objects.filter(Name='fatemeh')
-        # book1 = Book.objects.get(Name='asghar2')
-        # print(books)
-        # print(books[0].id)
-        # mybook = books[0]
-        # mybook.Name = 'kobra'
-        # mybook.save()
-        # print(mybook)
-        # books[0].Name = 'fatemeh' it doesn't fucking work!!!!
-        # books[0].save()
-        # for i in books:
-        #     i.Name = 'fatemeh'
-        #     i.save()
-        # print(Book.objects.get(id=Book.objects.filter(Name='sara')[0].id))
-        # book2 = Book.objects.get(id=Book.objects.filter(Name='sara')[0].id)
-        # # book2.Name='sara'
-        # # book2.save()
-        # book2.delete()
-        # book3 = Book(Name='arman', ISBN=987)
-        # print(book3.id)
-        # # book3.save()
-        # id1 = Book.objects.create(Name='dfghj',ISBN=5678).id
-        # print(id1)
-        # motoghayer = Book.objects.get_or_create(Name='khar')
-        # print(motoghayer)
-
-        MyVar = {
-            'key1': 'value1',
-            'key2': 'value2',
-            'key3': ['value3', 'value4'],
-            'key4': ['value5', 'value6', 'value7', 'value8'],
-
-        }
-        return render(request, self.template_name, MyVar)
+        return render(request, self.template_name, None)
 
 #----------------------Dashboard----------------------------#
 
@@ -184,22 +153,31 @@ class Method2(View):
         return render(request, self.template_name)
 
 
-def NeoQuery(request):
-    # if this is a POST request we need to process the form data
+def AddDummyData():
+    for _ in range(50):
+        Benchmark.objects.create(
+            algo_type=random.choice(
+                ["K-Means", "Mean Shift", "DBSCAN"]),
+            size=50,
+            t_pre=random.uniform(0, 10),
+            t_cluster=random.uniform(10, 50),
+            t_write=random.uniform(10, 12)
+        )
+
+
+def RunAlgo(request):
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = ParametersForm(request.POST)
-        # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            algo = form.cleaned_data["algo"][0]
+            data = form.cleaned_data
             # execute query on Neo...
-            algorithm_script()
-            # bm = get_benchmark(algo)
-            # Benchmark.objects.create(
+            # make this async
+            # results = algorithm_script(data)
+            # Create entry in database
             # algo_type = bm['algo'], size = bm['size'], run_time = bm['time'])
+            # AddDummyData()
             # redirect to a new URL:
-            return HttpResponseRedirect('/webApp/Benchmark')
+            return HttpResponseRedirect('/Results')
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -208,9 +186,33 @@ def NeoQuery(request):
     return render(request, 'webApp/form_time.html', {'form': form})
 
 
-# mapping parameters to the url doesn't seem like the correct approach here
-def Benchmarks(request):
+def Dashboard(request):
 
-    bms = Benchmark.objects.all()
+    return render(request, "webApp/dashboard.html")
 
-    return render(request, "webApp/benchmarks.html", {'bms': bms})
+
+def get_chart_data(request):
+
+    labels = []
+    data = []
+
+    # https://simpleisbetterthancomplex.com/tutorial/2020/01/19/how-to-use-chart-js-with-django.html
+
+    # bms = Benchmark.objects.all()
+    # queryset = Benchmark.objects.values('algo_type').annotate(
+    #     country_population=Sum('population')).order_by('-country_population')
+    # for entry in queryset:
+    #     labels.append(entry['country__name'])
+    #     data.append(entry['country_population'])
+
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
+
+
+def Results(request):
+
+    bms = Benchmark.objects.all()[:20]
+
+    return render(request, "webApp/results.html", {'bms': bms})

@@ -1,6 +1,4 @@
-from shelve import DbfilenameShelf
 from django import forms
-# from .models import Document
 from .models import Document
 
 
@@ -13,20 +11,37 @@ DATASET_CHOICES = [
     ('ldbc', 'LDBC'),
     ('covid-19', 'Covid 19'),
 ]
-ALGO_CHOICES = [('param1', 'display name 1'), ('param2', 'display name 2')]
+ALGO_CHOICES = [('k-mean', 'K-Means'), ('algo2', 'Dummy 2')]
 
 
 class ParametersForm(forms.Form):
-    algo = forms.ChoiceField(
-        required=True,
-        widget=forms.CheckboxSelectMultiple,
-        choices=ALGO_CHOICES,
-    )
 
-# class DocumentForm(forms.ModelForm):
-#     class Meta:
-#         model = Document
-#         fields = ('description', 'document', )
+    dataset = forms.ChoiceField(
+        required=True,
+        choices=DATASET_CHOICES,
+        label="Which dataset are you using?"
+    )
+    method = forms.ChoiceField(
+        required=True,
+        choices=ALGO_CHOICES,
+        label="Which method do you want?"
+    )
+    has_limit = forms.BooleanField(
+        label="Limit data?"
+    )
+    limit_to = forms.IntegerField(
+        label="How many nodes to limit to?"
+    )
+    use_incremental = forms.BooleanField(
+        label="Use Incremental Approach"
+    )
+    runs = forms.IntegerField(
+        required=True,
+        initial=1,
+        min_value=1,
+        max_value=100,
+        label="Number of runs"
+    )
 
 
 class DocumentForm(forms.ModelForm):
