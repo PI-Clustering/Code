@@ -3,11 +3,7 @@
 # Imports
 from termcolor import colored
 
-<<<<<<< HEAD
-#### File import
-=======
 # File import
->>>>>>> ca360fbca2e22c567e16b3915606f81a67f55079
 from .debug import printb
 from .node import Graph, Node
 from time import time

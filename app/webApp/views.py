@@ -172,7 +172,7 @@ def RunAlgo(request):
             data = form.cleaned_data
             # execute query on Neo...
             # make this async
-            # results = algorithm_script(data)
+            results = algorithm_script(data)
             # Create entry in database
             # algo_type = bm['algo'], size = bm['size'], run_time = bm['time'])
             # AddDummyData()

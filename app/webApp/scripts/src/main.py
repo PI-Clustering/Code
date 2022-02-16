@@ -9,11 +9,7 @@ import time
 # Neo4j imports
 from neo4j import GraphDatabase
 
-<<<<<<< HEAD
-### File imports
-=======
 # File imports
->>>>>>> ca360fbca2e22c567e16b3915606f81a67f55079
 from .lecture_graph import lecture_graph
 from .node import Node, Graph, Cluster
 from .clustering_algo import clustering
@@ -24,16 +20,27 @@ from .storing import storing
 def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print(colored("Schema inference using Gaussian Mixture Model clustering on PG\n", "red"))
 
-    # Inputs
-    # DBname = "ldbc" #input("Name of the database: ")
-    # uri = "bolt://localhost:7687" #input("Neo4j bolt address: ")
-    # user = "neo4j" #input("Neo4j username: ")
-    # passwd = "1234" #input("Neo4j password: ")
-    DBname = "covid19"
-    uri = "bolt://db.covidgraph.org:7687"
-    user = "public"
-    passwd = "corona"
+    print(params)
+    #{'dataset': 'ldbc', 'method': 'k-mean', 'has_limit': True, 'limit_to': 1, 'use_incremental': True, 'runs': 1}
+    
+    DBname = ""
+    uri = ""
+    user = ""
+    passwd = ""
 
+    if (params['dataset'] == 'ldbc'):
+        DBname = "ldbc" 
+        uri = "bolt://localhost:7687" 
+        user = "neo4j"
+        passwd = "1234"
+    elif (params['dataset'] == 'covid-19'):
+        DBname = "covid19"
+        uri = "bolt://db.covidgraph.org:7687"
+        user = "public"
+        passwd = "corona"
+    else:
+        exit(1)
+        
     # Connection a la base de donnée Neo4j
     # set encrypted to False to avoid possible errors
     driver = GraphDatabase.driver(uri, auth=(user, passwd), encrypted=False)

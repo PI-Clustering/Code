@@ -10,10 +10,6 @@ import hdbscan
 from time import sleep
 
 from .node import Node, Graph, Cluster
-<<<<<<< HEAD
-=======
-
->>>>>>> ca360fbca2e22c567e16b3915606f81a67f55079
 
 def clustering(graph):
     cluster = Cluster("Main")
