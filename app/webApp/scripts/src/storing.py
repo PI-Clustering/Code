@@ -2,12 +2,14 @@
 
 # Imports
 import csv
+import os 
 from threading import main_thread
 
 from numpy.core.arrayprint import DatetimeFormat
 
 from .node import Cluster, Node
 
+dirname = os.path.dirname(__file__)
 
 def storing(cluster, schema):
 
@@ -17,7 +19,7 @@ def storing(cluster, schema):
 
     main_node = dict()
 
-    with open("../graph/node.csv", "w") as f:
+    with open(os.path.join(dirname, "../graph/node.csv"), "w")as f:
         writer = csv.writer(f)
         header = ["id", "labels", "properties", "profondeur"]
         writer.writerow(header)
@@ -45,7 +47,7 @@ def storing(cluster, schema):
                     i, _ = rec_storing(sous_cluster, writer,
                                        i, parent_id, run_clusters, k)
 
-    with open("../graph/edge.csv", "w") as f:
+    with open(os.path.join(dirname, "../graph/edge.csv"), "w") as f:
         writer = csv.writer(f)
         header = ["id1", "id2", "types"]
         writer.writerow(header)
