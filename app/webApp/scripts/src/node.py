@@ -28,7 +28,7 @@ class Node:
     
     def __hash__(self):
 
-        tuple_retour = (frozenset(self._labels), frozenset(self._out))
+        tuple_retour = (frozenset(self._labels), frozenset(self._proprety))
         return hash(tuple_retour) 
 
 #------------------------------------------------------------------------------

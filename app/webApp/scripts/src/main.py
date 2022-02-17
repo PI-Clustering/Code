@@ -48,7 +48,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print(colored("Starting to query on ", "red"),
           colored(DBname, "red"), colored(":", "red"))
     t1 = time.perf_counter()
-    graph, schema = lecture_graph(driver)
+    graph, edges = lecture_graph(driver)
     t1f = time.perf_counter()
 
     step1 = t1f - t1  # time to complete step 1
@@ -80,7 +80,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
 
     print(colored("Writing file and identifying subtypes :", "red"))
     t3 = time.perf_counter()
-    file = storing(cluster, schema)
+    file = storing(cluster, edges)
     t3f = time.perf_counter()
 
     step3 = t3f - t3  # time to complete step 3

@@ -11,13 +11,14 @@ from .node import Cluster, Node
 
 dirname = os.path.dirname(__file__)
 
-def storing(cluster, schema):
+def storing(cluster, edges):
 
     data = []
     run_clusters = []
     i = 1
 
     main_node = dict()
+    cluster_list = [0,cluster]
 
     with open(os.path.join(dirname, "../graph/node.csv"), "w")as f:
         writer = csv.writer(f)
@@ -36,6 +37,8 @@ def storing(cluster, schema):
             data_line.append("1")  # the name of the infered type
 
             writer.writerow(data_line)
+            cluster_list.append(basic_type)
+
             main_node[labels] = i
 
             i += 1
@@ -45,20 +48,51 @@ def storing(cluster, schema):
             for sous_cluster in basic_type.get_son():
                 if sous_cluster is not None:  # inutile
                     i, _ = rec_storing(sous_cluster, writer,
-                                       i, parent_id, run_clusters, k)
+                                       i, parent_id, run_clusters, k, cluster_list)
+
+    print(cluster_list)
+    N = len(cluster_list)
+    tab = [[0 for _ in range(N)] for _ in range(N)]
+
+    for edge in edges:
+        ln = set(edge["labels(n)"])
+        pn = set(edge["keys(n)"])
+        n = Node(ln,pn)
+        cn = 0
+        for i in range(1,N):
+            if cluster_list[i].get_son() == [] and n in cluster_list[i]._nodes:
+                cn = i
+
+        lm = set(edge["labels(m)"])
+        pm = set(edge["keys(m)"])
+        m = Node(lm,pm)
+        cm = 0
+        for i in range(1,N):
+            if cluster_list[i].get_son() == [] and m in cluster_list[i]._nodes:
+                cm = i
+
+        print(cn,cm)
+        t = edge["type(r)"]
+        tab[cn][cm] = t
+
+    print(tab)
+
 
     with open(os.path.join(dirname, "../graph/edge.csv"), "w") as f:
         writer = csv.writer(f)
         header = ["id1", "id2", "types"]
         writer.writerow(header)
 
-        node = schema["nodes"]
-        rel = schema["relationships"]
+        for i in range(N):
+            for j in range(N):
+                if tab[i][j] != 0:
+                    writer.writerow([str(i),str(j),tab[i][j]])
+
 
     return "node.csv et edge.csv"
 
 
-def rec_storing(cluster, writer, i, parent_id, run_clusters, k):
+def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list):
     """ Write clusters into a file
 
     Parameters
@@ -131,10 +165,11 @@ def rec_storing(cluster, writer, i, parent_id, run_clusters, k):
         data_line.append(str(k))
 
         writer.writerow(data_line)
+        cluster_list.append(cluster)
+        
 
         run_clusters.append(labels+properties)
 
-        new_parent_id = i
 
         k += 1
 
@@ -144,6 +179,6 @@ def rec_storing(cluster, writer, i, parent_id, run_clusters, k):
         for sous_cluster in cluster.get_son():
             if sous_cluster is not None:  # inutile
                 i, _ = rec_storing(sous_cluster, writer, i,
-                                   parent_id, run_clusters, k)
+                                   parent_id, run_clusters, k, cluster_list)
 
     return i, k
