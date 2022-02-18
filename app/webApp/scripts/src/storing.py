@@ -11,7 +11,7 @@ from .node import Cluster, Node
 
 dirname = os.path.dirname(__file__)
 
-def storing(cluster, edges):
+def storing(cluster, edges, name):
 
     data = []
     run_clusters = []
@@ -19,8 +19,9 @@ def storing(cluster, edges):
 
     main_node = dict()
     cluster_list = [0,cluster]
+    subtype = []
 
-    with open(os.path.join(dirname, "../graph/node.csv"), "w")as f:
+    with open(os.path.join(dirname, "../graph/node_"+name+".csv"), "w")as f:
         writer = csv.writer(f)
         header = ["id", "labels", "properties", "profondeur"]
         writer.writerow(header)
@@ -41,14 +42,17 @@ def storing(cluster, edges):
 
             main_node[labels] = i
 
+            h = i
+
             i += 1
             k = 2
 
             # search for subtypes
             for sous_cluster in basic_type.get_son():
                 if sous_cluster is not None:  # inutile
+                    subtype.append((i,h))
                     i, _ = rec_storing(sous_cluster, writer,
-                                       i, parent_id, run_clusters, k, cluster_list)
+                                       i, parent_id, run_clusters, k, cluster_list, subtype)
 
     print(cluster_list)
     N = len(cluster_list)
@@ -78,7 +82,7 @@ def storing(cluster, edges):
     print(tab)
 
 
-    with open(os.path.join(dirname, "../graph/edge.csv"), "w") as f:
+    with open(os.path.join(dirname, "../graph/edge_"+name+".csv"), "w") as f:
         writer = csv.writer(f)
         header = ["id1", "id2", "types"]
         writer.writerow(header)
@@ -88,11 +92,14 @@ def storing(cluster, edges):
                 if tab[i][j] != 0:
                     writer.writerow([str(i),str(j),tab[i][j]])
 
+        for p in subtype:
+            writer.writerow([str(p[0]), str(p[1], "SUBTYPE_OF")])
+
 
     return "node.csv et edge.csv"
 
 
-def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list):
+def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list, subtype):
     """ Write clusters into a file
 
     Parameters
@@ -170,7 +177,7 @@ def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list):
 
         run_clusters.append(labels+properties)
 
-
+        h = i
         k += 1
 
         i += 1
@@ -178,7 +185,8 @@ def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list):
         # search for more subtypes
         for sous_cluster in cluster.get_son():
             if sous_cluster is not None:  # inutile
+                subtype.append((i,h))
                 i, _ = rec_storing(sous_cluster, writer, i,
-                                   parent_id, run_clusters, k, cluster_list)
+                                   parent_id, run_clusters, k, cluster_list, subtype)
 
     return i, k

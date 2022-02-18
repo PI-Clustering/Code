@@ -10,6 +10,7 @@ class UploadFileForm(forms.Form):
 DATASET_CHOICES = [
     ('ldbc', 'LDBC'),
     ('covid-19', 'Covid 19'),
+    ('fib25', 'FIB 25')
 ]
 ALGO_CHOICES = [('k-mean', 'K-Means'), ('algo2', 'Dummy 2')]
 

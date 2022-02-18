@@ -38,6 +38,11 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
         uri = "bolt://db.covidgraph.org:7687"
         user = "public"
         passwd = "corona"
+    elif (params['dataset'] == 'fib25'):
+        DBname = "fib25" 
+        uri = "bolt://localhost:7687" 
+        user = "neo4j"
+        passwd = "1234"
     else:
         exit(1)
         
@@ -80,7 +85,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
 
     print(colored("Writing file and identifying subtypes :", "red"))
     t3 = time.perf_counter()
-    file = storing(cluster, edges)
+    file = storing(cluster, edges, params['dataset'])
     t3f = time.perf_counter()
 
     step3 = t3f - t3  # time to complete step 3
