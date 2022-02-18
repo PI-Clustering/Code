@@ -67,7 +67,6 @@ def rec_clustering(cluster, nb_cluster=2):
                 if node in new_clusters[predictions[j]]._nodes:
                     new_clusters[predictions[j]]._nodes[node] += 10**ecrasage
                 else:
-                    print("&", end="")
                     new_clusters[predictions[j]]._nodes[node] = 10**ecrasage
                 j += 1
 
