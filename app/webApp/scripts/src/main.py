@@ -21,8 +21,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print(colored("Schema inference using Gaussian Mixture Model clustering on PG\n", "red"))
 
     print(params)
-    #{'dataset': 'ldbc', 'method': 'k-mean', 'has_limit': True, 'limit_to': 1, 'use_incremental': True, 'runs': 1}
-    
+    #{'dataset': 'ldbc', 'method': 'k-mean', 'has_limit': False, 'limit_to': 5, 'use_incremental': False, 'nb_subcluster': 1}
     DBname = ""
     uri = ""
     user = ""
@@ -74,7 +73,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
 
     print(colored("Starting to cluster data using GMM :", "red"))
     t2 = time.perf_counter()
-    cluster = clustering(trainning_graph)
+    cluster = clustering(trainning_graph, int(params["nb_subcluster"]))
     t2f = time.perf_counter()
 
     step2 = t2f - t2  # time to complete step 2

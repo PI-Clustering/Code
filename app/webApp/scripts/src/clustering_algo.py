@@ -11,7 +11,7 @@ from time import sleep
 
 from .node import Node, Graph, Cluster
 
-def clustering(graph):
+def clustering(graph, nb_cluster):
     cluster = Cluster("Main")
     # warnings.filterwarnings("ignore")
 
@@ -29,7 +29,7 @@ def clustering(graph):
         # search for all subclusters
         new_cluster._nodes = correct_nodes
         if len(correct_nodes) != 0:
-            rec_clustering(new_cluster)
+            rec_clustering(new_cluster, nb_cluster)
             cluster.add_son(new_cluster)
             new_cluster._name = ":".join(list(lab_set))
 

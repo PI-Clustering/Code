@@ -42,12 +42,11 @@ class ParametersForm(forms.Form):
         required=False,
         label="Use Incremental Approach"
     )
-    runs = forms.IntegerField(
+    nb_subcluster = forms.IntegerField(
         required=True,
-        initial=1,
-        min_value=1,
-        max_value=100,
-        label="Number of runs"
+        initial=2,
+        min_value=2,
+        label="How many subcluster"
     )
 
 
