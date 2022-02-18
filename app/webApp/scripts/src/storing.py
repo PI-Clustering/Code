@@ -19,7 +19,7 @@ def storing(cluster, edges, name):
 
     main_node = dict()
     cluster_list = [0,cluster]
-    subtype = []
+    esubtype = []
 
     with open(os.path.join(dirname, "../graph/node_"+name+".csv"), "w")as f:
         writer = csv.writer(f)
@@ -50,11 +50,13 @@ def storing(cluster, edges, name):
             # search for subtypes
             for sous_cluster in basic_type.get_son():
                 if sous_cluster is not None:  # inutile
-                    subtype.append((i,h))
+                    esubtype.append((i,h))
+
                     i, _ = rec_storing(sous_cluster, writer,
-                                       i, parent_id, run_clusters, k, cluster_list, subtype)
+                                       i, parent_id, run_clusters, k, cluster_list, esubtype)
 
     print(cluster_list)
+    print(esubtype)
     N = len(cluster_list)
     tab = [[0 for _ in range(N)] for _ in range(N)]
 
@@ -92,8 +94,8 @@ def storing(cluster, edges, name):
                 if tab[i][j] != 0:
                     writer.writerow([str(i),str(j),tab[i][j]])
 
-        for p in subtype:
-            writer.writerow([str(p[0]), str(p[1], "SUBTYPE_OF")])
+        for p in esubtype:
+            writer.writerow([str(p[0]), str(p[1]), "SUBTYPE_OF"])
 
 
     return "node.csv et edge.csv"
