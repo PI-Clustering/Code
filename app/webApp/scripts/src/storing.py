@@ -21,7 +21,7 @@ def storing(cluster, edges, name):
     cluster_list = [0,cluster]
     esubtype = []
 
-    with open(os.path.join(dirname, "../graph/node_"+name+".csv"), "w")as f:
+    with open(os.path.join(dirname, "../graph/node.csv"), "w")as f:
         writer = csv.writer(f)
         header = ["id", "labels", "properties", "profondeur"]
         writer.writerow(header)
@@ -84,7 +84,7 @@ def storing(cluster, edges, name):
     print(tab)
 
 
-    with open(os.path.join(dirname, "../graph/edge_"+name+".csv"), "w") as f:
+    with open(os.path.join(dirname, "../graph/edge.csv"), "w") as f:
         writer = csv.writer(f)
         header = ["id1", "id2", "types"]
         writer.writerow(header)
