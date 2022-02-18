@@ -28,12 +28,18 @@ class ParametersForm(forms.Form):
         label="Which method do you want?"
     )
     has_limit = forms.BooleanField(
+        required=False,
         label="Limit data?"
     )
     limit_to = forms.IntegerField(
-        label="How many nodes to limit to?"
+        required=False,
+        initial=100,
+        min_value=1,
+        max_value=100,
+        label="How many percent of nodes to limit to?"
     )
     use_incremental = forms.BooleanField(
+        required=False,
         label="Use Incremental Approach"
     )
     runs = forms.IntegerField(

@@ -64,7 +64,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
 
     print(colored("Data sampling : ", "blue"))
     ts = time.perf_counter()
-    trainning_graph = sampling(graph, 10)
+    trainning_graph = sampling(graph, params["has_limit"] , int(params["limit_to"]))
     tsf = time.perf_counter()
     steps = tsf - ts  # time to complete the sampling step
     print(colored("Separating done.", "green"))
