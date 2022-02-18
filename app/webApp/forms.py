@@ -10,6 +10,7 @@ class UploadFileForm(forms.Form):
 DATASET_CHOICES = [
     ('ldbc', 'LDBC'),
     ('covid-19', 'Covid 19'),
+    ('fib25', 'FIB 25')
 ]
 ALGO_CHOICES = [('k-mean', 'K-Means'), ('algo2', 'Dummy 2')]
 
@@ -27,20 +28,25 @@ class ParametersForm(forms.Form):
         label="Which method do you want?"
     )
     has_limit = forms.BooleanField(
+        required=False,
         label="Limit data?"
     )
     limit_to = forms.IntegerField(
-        label="How many nodes to limit to?"
-    )
-    use_incremental = forms.BooleanField(
-        label="Use Incremental Approach"
-    )
-    runs = forms.IntegerField(
-        required=True,
-        initial=1,
+        required=False,
+        initial=100,
         min_value=1,
         max_value=100,
-        label="Number of runs"
+        label="How many percent of nodes to limit to?"
+    )
+    use_incremental = forms.BooleanField(
+        required=False,
+        label="Use Incremental Approach"
+    )
+    nb_subcluster = forms.IntegerField(
+        required=True,
+        initial=2,
+        min_value=2,
+        label="How many subcluster"
     )
 
 

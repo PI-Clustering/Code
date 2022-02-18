@@ -20,16 +20,31 @@ from .storing import storing
 def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print(colored("Schema inference using Gaussian Mixture Model clustering on PG\n", "red"))
 
-    # Inputs
-    # DBname = "ldbc" #input("Name of the database: ")
-    # uri = "bolt://localhost:7687" #input("Neo4j bolt address: ")
-    # user = "neo4j" #input("Neo4j username: ")
-    # passwd = "1234" #input("Neo4j password: ")
-    DBname = "covid19"
-    uri = "bolt://db.covidgraph.org:7687"
-    user = "public"
-    passwd = "corona"
+    print(params)
+    #{'dataset': 'ldbc', 'method': 'k-mean', 'has_limit': False, 'limit_to': 5, 'use_incremental': False, 'nb_subcluster': 1}
+    DBname = ""
+    uri = ""
+    user = ""
+    passwd = ""
 
+    if (params['dataset'] == 'ldbc'):
+        DBname = "ldbc" 
+        uri = "bolt://localhost:7687" 
+        user = "neo4j"
+        passwd = "1234"
+    elif (params['dataset'] == 'covid-19'):
+        DBname = "covid19"
+        uri = "bolt://db.covidgraph.org:7687"
+        user = "public"
+        passwd = "corona"
+    elif (params['dataset'] == 'fib25'):
+        DBname = "fib25" 
+        uri = "bolt://localhost:7687" 
+        user = "neo4j"
+        passwd = "1234"
+    else:
+        exit(1)
+        
     # Connection a la base de donnée Neo4j
     # set encrypted to False to avoid possible errors
     driver = GraphDatabase.driver(uri, auth=(user, passwd), encrypted=False)
@@ -37,7 +52,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print(colored("Starting to query on ", "red"),
           colored(DBname, "red"), colored(":", "red"))
     t1 = time.perf_counter()
-    graph, schema = lecture_graph(driver)
+    graph, edges = lecture_graph(driver)
     t1f = time.perf_counter()
 
     step1 = t1f - t1  # time to complete step 1
@@ -48,7 +63,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
 
     print(colored("Data sampling : ", "blue"))
     ts = time.perf_counter()
-    trainning_graph = sampling(graph, 10)
+    trainning_graph = sampling(graph, params["has_limit"] , int(params["limit_to"]))
     tsf = time.perf_counter()
     steps = tsf - ts  # time to complete the sampling step
     print(colored("Separating done.", "green"))
@@ -58,7 +73,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
 
     print(colored("Starting to cluster data using GMM :", "red"))
     t2 = time.perf_counter()
-    cluster = clustering(trainning_graph)
+    cluster = clustering(trainning_graph, int(params["nb_subcluster"]))
     t2f = time.perf_counter()
 
     step2 = t2f - t2  # time to complete step 2
@@ -69,7 +84,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
 
     print(colored("Writing file and identifying subtypes :", "red"))
     t3 = time.perf_counter()
-    file = storing(cluster, schema)
+    file = storing(cluster, edges, params['dataset'])
     t3f = time.perf_counter()
 
     step3 = t3f - t3  # time to complete step 3

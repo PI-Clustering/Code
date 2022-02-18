@@ -7,13 +7,15 @@ from .node import Graph, Node
 from math import ceil
 
 
-def sampling(graph, training_percentage=100):
+def sampling(graph, boolean, percent):
+    if not boolean:
+        return graph
 
     # get the number of occurrences of each node in a variable
     new_graph = Graph()
 
     for node in graph.get_nodes():
         new_graph.add_node(node, int(graph.occurs(
-            node)*ceil(training_percentage/100.)))
+            node)*percent/100.))
 
     return new_graph

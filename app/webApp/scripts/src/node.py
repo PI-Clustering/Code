@@ -28,7 +28,7 @@ class Node:
     
     def __hash__(self):
 
-        tuple_retour = (frozenset(self._labels), frozenset(self._out))
+        tuple_retour = (frozenset(self._labels), frozenset(self._proprety))
         return hash(tuple_retour) 
 
 #------------------------------------------------------------------------------
@@ -101,11 +101,11 @@ class Cluster:
     def get_name(self):
         return self._name
     
-    def add_node(self, node):
+    def add_node(self, node, n=1):
         if node in self._nodes:
-            self._nodes[node] += 1
+            self._nodes[node] += n
         else:
-            self._nodes[node] = 1
+            self._nodes[node] = n
     
     def get_sons_id(self):
         if self._sons_id == None:

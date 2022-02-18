@@ -31,8 +31,10 @@ def lecture_graph(driver):
         print(colored("Done.", "green"))
         printb(graph)
 
-        # Query sur le schema du graph
-        schema = session.run("CALL db.schema.visualization")
-        schema = list(schema)[0]
-
-        return graph, schema
+        print(colored("Querying neo4j to get all the edges:", "yellow"))
+        query = "MATCH (n)-[r]->(m) \
+                RETURN DISTINCT labels(n),keys(n),type(r),labels(m),keys(m)"
+        edges_a = session.run(query)
+        edges = [e for e in edges_a]
+    
+        return graph, edges

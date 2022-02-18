@@ -22,7 +22,7 @@ def add_node(cluster, node):
     else:
         nodes = cluster.get_nodes()
         graph = Graph()
-        for node in nodes.key():
+        for node in nodes.keys():
             graph.add_node(node, nodes[node])
         cluster = clustering(graph)
 
@@ -53,43 +53,52 @@ def add_node_rec(cluster, node):
             "We shouldn't be in this situation, as the minimum distance, 0, is supposed to be reached")
 
 
-def add_node_exact(cluster, node):
+def add_node_exact(cluster, dict_node):
     """
     The point of this function is to insert a node, exactly as if we were recomputing everything,
     computing only the part we didn't already compute.
     """
 
-    cluster.add_node(node)
+    pre_computed = dict()
+    get_all_cluster(cluster, pre_computed)
+
+    for node in dict_node:
+        cluster.add_node(node, dict_node[node])
+
     labs = node.get_labels()
 
     nodes_cluster = cluster.get_nodes()
     fils = cluster.get_son()
     first_cluster = cluster._cutting_values
 
-    for i in range(len(first_cluster)):
-        if first_cluster[i].issubset(labs):
-            add_node_exact_rec(fils[i], node)
+    for i in range(len(fils)):
+        node_to_add = dict()
+        for node in dict_node:
+            if first_cluster[i].issubset(node.get_labels()):
+                node_to_add[node] = dict_node[node]
+        add_node_exact_rec(fils[i], node_to_add)
 
-    if labs not in first_cluster:  # That mean we have a new type of node with a new set of label
-        new_cluster = Cluster()
-        correct_nodes = dict()
-        cluster._cutting_values.append(labs)
-        correct_nodes[node] = 1
-        for node_c in nodes_cluster:
-            if labs.issubset(node_c.get_labels()):
-                correct_nodes[node_c] = nodes_cluster[node_c]
-                new_cluster._nodes = correct_nodes
-        rec_clustering(new_cluster)
-        cluster.add_son(new_cluster)
-        new_cluster._name = ":".join(list(LabelSpreading))
+    for node in dict_node:
+        labs = node.get_labels()
+        if labs not in cluster._cutting_values:  # That mean we have a new type of node with a new set of label
+            new_cluster = Cluster()
+            correct_nodes = dict()
+            cluster._cutting_values.append(labs)
+            correct_nodes[node] = 1
+            for node_c in nodes_cluster:
+                if labs.issubset(node_c.get_labels()):
+                    correct_nodes[node_c] = nodes_cluster[node_c]
+                    new_cluster._nodes = correct_nodes
+            rec_clustering(new_cluster)
+            cluster.add_son(new_cluster)
+            new_cluster._name = ":".join(list(labs))
 
     return cluster
 
 
-def add_node_exact_rec(cluster, node):
+def add_node_exact_rec(cluster, pre_computed):
 
     nb_cluster = len(cluster.get_son())
-    cluster.add_node(node)
 
     correct_nodes = cluster.get_nodes()
     ref_node = max_labs_props(correct_nodes)
@@ -100,7 +109,7 @@ def add_node_exact_rec(cluster, node):
 
     computed_measures, ecrasage = to_format(similarities_dict, correct_nodes)
 
-    if len(correct_nodes) >= nb_cluster:
+    if len(correct_nodes) >= nb_cluster and nb_cluster > 0:
 
         bgmm = BayesianGaussianMixture(
             n_components=nb_cluster, tol=1, max_iter=10).fit(computed_measures)
@@ -127,19 +136,25 @@ def add_node_exact_rec(cluster, node):
         if (count < 2):
             return
 
+        cluster._fils=[]
+
         # For each cluster cluster
-        dict_of_id = cluster.get_sons_id()
         for i in range(nb_cluster):
-
-            new_id = frozenset(new_clusters[i]._node)
-            if frozenset(new_id) in dict_of_id:
-                cluster.add_son(dict_of_id[new_clusters[i]])
-
-            elif new_clusters[i]._nodes != dict():
-                # search for more subclusters in this subcluster
-                add_node_exact_rec(new_clusters[i], nb_cluster)
+            id = frozenset(new_clusters[i].get_nodes().items())
+            if id in pre_computed:
+                cluster.add_son(pre_computed[id])
+            elif len(id) > 0:
+                add_node_exact_rec(new_clusters[i], pre_computed)
                 cluster.add_son(new_clusters[i])
 
+                
+
+
+def get_all_cluster(cluster,res):
+    nodes = frozenset(cluster.get_nodes().items())
+    res[nodes] = deepcopy(cluster)
+    for son in cluster.get_son():
+        get_all_cluster(son, res)
 
 def add_node_hybrid(cluster, node):
     """Insert a node in our cluster not recalculating GMM as lon as the reference node shoudl not change"""
@@ -154,7 +169,7 @@ def add_node_hybrid(cluster, node):
 
     for i in range(len(first_cluster)):
         if first_cluster[i].issubset(labs):
-            add_node_exact_rec(fils[i], node)
+            add_node_hybrid_rec(fils[i], node)
 
 
 def add_node_hybrid_rec(cluster, node):
