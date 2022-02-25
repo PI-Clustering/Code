@@ -11,8 +11,8 @@
 {% block content %}
 <div class="right_col" role="main">
     <h1>Chart</h1>
-    <div id="container-time-series" style="width:100%; height:400px;"></div>
-    <div id="container" style="width:100%; height:400px;"></div>
+    <div id="ami-progression-chart" style="width:100%; height:400px;"></div>
+    <div id="time-progression-chart" style="width:100%; height:400px;"></div>
 </div>
 <div class="x_content">
 </div>
@@ -25,129 +25,124 @@
 
 <script>
 
-    let chart; // globally available
-    document.addEventListener('DOMContentLoaded', function () {
-        chart = Highcharts.stockChart('container', {
-            rangeSelector: {
-                selected: 1
-            },
-            series: [{
-                name: 'USD to EUR',
-                data: usdtoeur // predefined JavaScript array
-            }]
-        });
-    });
 
-    function getData(n) {
-        var baseline = [],
-            hannah = [],
-            hbscan = [],
-            i,
-            x,
-            a,
-            b;
-        for (i = 0; i < n; i = i + 1) {
-            baseline.push([i, 0.98 - Math.exp(-i / 100) + 0.02 * Math.random()]);
-            hannah.push([i, 0.95 - Math.exp(-i / 200) + 0.05 * Math.random()]);
-            hbscan.push([i, 0.95 - Math.exp(-i / 150) + 0.05 * Math.random()]);
-        }
-        return {
-            "baseline": baseline,
-            "hana": hannah,
-            "hbscan": hbscan
-        };
-    }
-    var n = 500,
-        data = getData(n);
+    var make_charts = function (data) {
 
+        console.log(data);
 
-    console.time('line');
-    Highcharts.chart('container-time-series', {
+        Highcharts.chart('time-progression-chart', {
 
-        chart: {
-            zoomType: 'x'
-        },
-
-        title: {
-            text: 'AMI progression by iteration, plotted against baseline'
-        },
-
-        subtitle: {
-            text: 'Source: own simulations'
-        },
-
-        yAxis: {
-            title: {
-                text: 'AMI'
-            }
-        },
-
-        xAxis: {
-            type: 'integer',
-            title: {
-                text: 'Iteration step'
-            }
-        },
-
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle'
-        },
-
-        tooltip: {
-            pointFormat: '{series.name} algo has converged to <b>{point.y:,.2f}</b><br/>after {point.x} iterations'
-        },
-
-        yAxis: {
-            min: 0,
-            max: 1,
-            title: {
-                text: 'AMI'
-            }
-        },
-
-
-        series: [{
-            data: data.baseline,
-            name: 'Baseline'
-        },
-        {
-            data: data.hbscan,
-            name: 'HBScan'
-        },
-        {
-            data: data.hana,
-            name: 'Hana'
-        }]
-
-    });
-
-    console.timeEnd('line');
-    document.addEventListener('DOMContentLoaded', function () {
-        const chart = Highcharts.chart('container', {
             chart: {
-                type: 'bar'
+                zoomType: 'x'
             },
+
             title: {
-                text: 'Fruit Consumption'
+                text: 'Execution time progression by iteration, plotted against baseline'
             },
-            xAxis: {
-                categories: ['Apples', 'Bananas', 'Oranges']
+
+            subtitle: {
+                text: 'Source: own simulations'
             },
+
             yAxis: {
                 title: {
-                    text: 'Fruit eaten'
+                    text: 'Execution time, s'
                 }
             },
+
+            xAxis: {
+                type: 'integer',
+                title: {
+                    text: 'Iteration step'
+                }
+            },
+
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            tooltip: {
+                pointFormat: '{series.name} algo takes <b>{point.y:,.2f}</b><br/> for {point.x} iterations'
+            },
+
             series: [{
-                name: 'Jane',
-                data: [1, 0, 4]
-            }, {
-                name: 'John',
-                data: [5, 7, 3]
+                data: data.time.own,
+                name: 'GMM Schema'
+            },
+            {
+                data: data.time.hbscan,
+                name: 'HBScan'
+            },
+            {
+                data: data.time.hana,
+                name: 'MR Schema'
             }]
+
         });
+
+        Highcharts.chart('ami-progression-chart', {
+
+            chart: {
+                zoomType: 'x'
+            },
+
+            title: {
+                text: 'AMI progression by iteration, plotted against baseline'
+            },
+
+            subtitle: {
+                text: 'Source: own simulations'
+            },
+
+            xAxis: {
+                type: 'integer',
+                title: {
+                    text: 'Iteration step'
+                }
+            },
+
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            tooltip: {
+                pointFormat: '{series.name} algo has converged to <b>{point.y:,.2f}</b><br/>after {point.x} iterations'
+            },
+
+            yAxis: {
+                min: 0,
+                max: 1,
+                title: {
+                    text: 'AMI'
+                }
+            },
+
+            series: [{
+                data: data.ami.own,
+                name: 'GMM Schema'
+            },
+            {
+                data: data.ami.hbscan,
+                name: 'HBScan'
+            },
+            {
+                data: data.ami.hana,
+                name: 'MR Schema'
+            }]
+
+        });
+    }
+
+    $(function () {
+        // Document is ready
+
+        $.getJSON("/GetChartData", make_charts);
+
+
     });
 
 </script>

@@ -1,8 +1,9 @@
 # Create your views here.
 from curses import raw
-from math import floor
+from math import floor, exp
 from operator import mod
 import random
+from typing import Any, Dict, List, Tuple
 from django.http import HttpResponse
 from django.views import View
 from django.http import HttpResponseRedirect
@@ -191,10 +192,45 @@ def Dashboard(request):
     return render(request, "webApp/dashboard.html")
 
 
-def get_chart_data(request):
+def generate_data() -> Any:
 
-    labels = []
-    data = []
+    own_ami: List[Tuple[int, float]]
+    hannah_ami: List[Tuple[int, float]]
+    hbscan_ami: List[Tuple[int, float]]
+    own_time: List[Tuple[int, float]]
+    hannah_time: List[Tuple[int, float]]
+    hbscan_time: List[Tuple[int, float]]
+    own_ami = []
+    hannah_ami = []
+    hbscan_ami = []
+    own_time = []
+    hannah_time = []
+    hbscan_time = []
+    for i in range(500):
+        own_ami.append((i, 0.98 - exp(-i / 100) + 0.02 * random.random()))
+        hannah_ami.append((i, 0.95 - exp(-i / 200) + 0.05 * random.random()))
+        hbscan_ami.append((i, 0.95 - exp(-i / 150) + 0.05 * random.random()))
+        own_time.append((i, exp(i / 500)))
+        hannah_time.append((i, exp(i / 200)))
+        hbscan_time.append((i, exp(i / 650)))
+
+    my_dict = {
+        "ami": {
+            "own": own_ami,
+            "hana": hannah_ami,
+            "hbscan": hbscan_ami
+        },
+        "time": {
+            "own": own_time,
+            "hana": hannah_time,
+            "hbscan": hbscan_time
+        }
+    }
+
+    return my_dict
+
+
+def get_chart_data(request):
 
     # https://simpleisbetterthancomplex.com/tutorial/2020/01/19/how-to-use-chart-js-with-django.html
 
@@ -205,10 +241,9 @@ def get_chart_data(request):
     #     labels.append(entry['country__name'])
     #     data.append(entry['country_population'])
 
-    return JsonResponse(data={
-        'labels': labels,
-        'data': data,
-    })
+    data = generate_data()
+
+    return JsonResponse(data)
 
 
 def Results(request):
