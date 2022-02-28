@@ -18,10 +18,10 @@ def storing(cluster, edges, name):
     i = 1
 
     main_node = dict()
-    cluster_list = [0,cluster]
+    cluster_list = [cluster]
     esubtype = []
 
-    with open(os.path.join(dirname, "../graph/node.csv"), "w")as f:
+    with open(os.path.join(dirname, "../../../static/graph_data/node.csv"), "w")as f:
         writer = csv.writer(f)
         header = ["id", "labels", "properties", "profondeur"]
         writer.writerow(header)
@@ -84,7 +84,7 @@ def storing(cluster, edges, name):
     print(tab)
 
 
-    with open(os.path.join(dirname, "../graph/edge.csv"), "w") as f:
+    with open(os.path.join(dirname, "../../../static/graph_data/edge.csv"), "w") as f:
         writer = csv.writer(f)
         header = ["id1", "id2", "types"]
         writer.writerow(header)
@@ -165,7 +165,8 @@ def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list, su
         properties = ":".join(sorted(list(always_properties)))
 
     # if the formed cluster does not exist
-    if labels+properties not in run_clusters:
+    # if labels+properties not in run_clusters:
+    if True:
 
         # line id
         data_line = [str(i)]
