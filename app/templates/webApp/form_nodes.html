@@ -1,5 +1,5 @@
 {% extends "webApp/base_site.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}About us{% endblock %}
 
 {% block stylesheets %}
 {{ block.super }}
@@ -10,13 +10,18 @@
 
 
 {% block content %}
-<h2> Hello world</h2>
+<h1>Add nodes</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
 {% endblock content %}
 
 
 
 {% block javascripts %}
-{{ block.super }}
+{{ block.super}}
 
 
 

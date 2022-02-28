@@ -27,9 +27,9 @@ class ParametersForm(forms.Form):
         choices=ALGO_CHOICES,
         label="Which method do you want?"
     )
-    has_limit = forms.BooleanField(
+    use_precomputed = forms.BooleanField(
         required=False,
-        label="Limit data?"
+        label="Use precomputed?"
     )
     limit_to = forms.IntegerField(
         required=False,
@@ -38,15 +38,29 @@ class ParametersForm(forms.Form):
         max_value=100,
         label="How many percent of nodes to limit to?"
     )
-    use_incremental = forms.BooleanField(
-        required=False,
-        label="Use Incremental Approach"
-    )
     nb_subcluster = forms.IntegerField(
         required=True,
         initial=2,
         min_value=2,
         label="How many subcluster"
+    )
+    query_edge = forms.BooleanField(
+        required=False,
+        label="Query edge?"
+    )
+
+
+class NodesForm(forms.Form):
+
+    how_many = forms.IntegerField(
+        required=True,
+        initial=2,
+        min_value=2,
+        label="How many nodes to add?"
+    )
+    use_virtual_data = forms.BooleanField(
+        required=False,
+        label="Use Virtual Data?"
     )
 
 

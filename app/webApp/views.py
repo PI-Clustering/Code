@@ -6,6 +6,7 @@ import random
 from typing import Any, Dict, List, Tuple
 from django.http import HttpResponse
 from django.views import View
+from django.views.generic import ListView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -18,9 +19,13 @@ from django.http import HttpResponse, JsonResponse
 
 import csv
 from .scripts.driver import get_benchmark
-from .models import Benchmark
-from .forms import UploadFileForm, ParametersForm
+from .models import Benchmark, DataPoint
+from .forms import UploadFileForm, ParametersForm, NodesForm
 from .scripts.src.main import algorithm_script
+
+
+class BenchmarkListView(ListView):
+    model = Benchmark
 
 
 def some_view(request):
@@ -166,6 +171,23 @@ def AddDummyData():
         )
 
 
+def AddNode(request):
+    if request.method == 'POST':
+        form = NodesForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            # Do something
+            # run_function(data)
+            # redirect to a new URL:
+            return HttpResponseRedirect('/Results')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = NodesForm()
+
+    return render(request, 'webApp/form_nodes.html', {'form': form})
+
+
 def RunAlgo(request):
     if request.method == 'POST':
         form = ParametersForm(request.POST)
@@ -174,9 +196,20 @@ def RunAlgo(request):
             # execute query on Neo...
             # make this async
             results = algorithm_script(data)
-            # Create entry in database
-            # algo_type = bm['algo'], size = bm['size'], run_time = bm['time'])
-            # AddDummyData()
+            bm = Benchmark.objects.create(
+                algo_type='Emile method',
+                data_set='emile',
+                n_iterations=20,
+                size=20)
+            DataPoint.objects.create(
+                benchmark=bm,
+                iteration_no=1,
+                ami=0.5,
+                f_score=0.5,
+                t_pre=0.5,
+                t_cluster=0.5,
+                t_write=0.5
+            )
             # redirect to a new URL:
             return HttpResponseRedirect('/Results')
 

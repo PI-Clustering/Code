@@ -1,0 +1,33 @@
+{% extends "webApp/base_site.html" %}
+
+{% block content %}
+<h2>Benchmarks</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Algorithm</th>
+            <th>Graph Size</th>
+            <th>Pre-processing time</th>
+            <th>Cluster time</th>
+            <th>Write time</th>
+            <th>Iterations</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bm in object_list %}
+        <tr>
+            <th scope="row">{{ bm.id }}</th>
+
+            <td>{{ bm.algo_type }}</td>
+            <td>{{ bm.data_set }}</td>
+            <td>{{ bm.t_pre }}</td>
+            <td>{{ bm.t_cluster }}</td>
+            <td>{{ bm.t_write }}</td>
+            <td>{{ bm.n_iterations }}</td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
