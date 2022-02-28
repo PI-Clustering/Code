@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings  # add this
 from django.conf.urls.static import static  # add this
+from django.views.generic.base import TemplateView
 # Index, Dashboard, Projects, FAQ, About_us, Method2, Method1, RunQuery
 from . import views
 
@@ -19,4 +20,6 @@ urlpatterns = [
     path('About_us/', views.About_us.as_view(), name='About_us'),
     path('Method1/', views.Method1.as_view(), name='Method1'),
     path('Method2/', views.Method2.as_view(), name='Method2'),
+    path('node.csv', views.node_csv),
+    path('edge.csv', views.edge_csv),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
