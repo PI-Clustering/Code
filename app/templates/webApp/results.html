@@ -10,61 +10,25 @@
 
 
 {% block content %}
-<div class="right_col" role="main">
-    <div class="row">
-        <div class="col-md-6 col-sm-6  ">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>Benchmarking Results</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="#">Settings 1</a>
-                                <a class="dropdown-item" href="#">Settings 2</a>
-                            </div>
-                        </li>
-                        <li><a class="close-link"><i class="fa fa-close"></i></a>
-                        </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                </div>
+
                 <div class="x_content">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Algorithm</th>
-                                <th>Graph Size</th>
-                                <th>Pre-processing time</th>
-                                <th>Cluster time</th>
-                                <th>Write time</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for bm in bms %}
-                            <tr>
-                                <th scope="row">{{ bm.id }}</th>
-
-                                <td>{{ bm.algo_type }}</td>
-                                <td>{{ bm.size }}</td>
-                                <td>{{ bm.t_pre }}</td>
-                                <td>{{ bm.t_cluster }}</td>
-                                <td>{{ bm.t_write }}</td>
-
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                    <style>
+                        html, body { background-color: white; }
+svg { height:1000px; width:1500px; }
+.edge {
+  stroke-opacity: 0.6;
+  stroke-width: 2px;
+}
+                    </style>
+                    <svg id="graph">
+                        <defs>
+                          <marker id="arrowhead" viewbox="-0 -5 10 10" refX=18 refY=0 orient=auto markerWidth=13 markerHeight=13 xoverflow=visible>
+                            <path d="M 0,-5 L 10 ,0 L 0,5" fill="#999" style="stroke: none" />
+                          </marker>
+                        </defs>
+                      </svg>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src=/static/js/render_graph.js></script>
 {% endblock content %}
 
 

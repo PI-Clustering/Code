@@ -15,7 +15,7 @@ from django import forms
 from django.shortcuts import render
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 
 import csv
 from .scripts.driver import get_benchmark
@@ -42,6 +42,13 @@ def some_view(request):
 
     return response
 
+def node_csv(request):
+    response = FileResponse(open("webApp/scripts/graph/node.csv","rb"))
+    return response
+
+def edge_csv(request):
+    response = FileResponse(open("webApp/scripts/graph/edge.csv","rb"))
+    return response
 
 def handle_uploaded_file(f):
     with open('some/file/name.txt', 'wb+') as destination:

@@ -18,7 +18,7 @@ def storing(cluster, edges, name):
     i = 1
 
     main_node = dict()
-    cluster_list = [0,cluster]
+    cluster_list = [cluster]
     esubtype = []
 
     with open(os.path.join(dirname, "../graph/node.csv"), "w")as f:
@@ -50,10 +50,9 @@ def storing(cluster, edges, name):
             # search for subtypes
             for sous_cluster in basic_type.get_son():
                 if sous_cluster is not None:  # inutile
-                    esubtype.append((i,h))
 
                     i, _ = rec_storing(sous_cluster, writer,
-                                       i, parent_id, run_clusters, k, cluster_list, esubtype)
+                                       i, parent_id, run_clusters, k, cluster_list, esubtype, h)
 
     print(cluster_list)
     print(esubtype)
@@ -89,9 +88,9 @@ def storing(cluster, edges, name):
         header = ["id1", "id2", "types"]
         writer.writerow(header)
 
-        for i in range(N):
-            for j in range(N):
-                if tab[i][j] != 0:
+        for i in range(1,N):
+            for j in range(1,N):
+                if tab[i][j] != 0 and i != j:
                     writer.writerow([str(i),str(j),tab[i][j]])
 
         for p in esubtype:
@@ -101,7 +100,7 @@ def storing(cluster, edges, name):
     return "node.csv et edge.csv"
 
 
-def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list, subtype):
+def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list, subtype, h):
     """ Write clusters into a file
 
     Parameters
@@ -167,6 +166,7 @@ def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list, su
     # if the formed cluster does not exist
     if labels+properties not in run_clusters:
 
+        subtype.append((i,h))
         # line id
         data_line = [str(i)]
         data_line.append(labels)
@@ -187,8 +187,7 @@ def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list, su
         # search for more subtypes
         for sous_cluster in cluster.get_son():
             if sous_cluster is not None:  # inutile
-                subtype.append((i,h))
                 i, _ = rec_storing(sous_cluster, writer, i,
-                                   parent_id, run_clusters, k, cluster_list, subtype)
+                                   parent_id, run_clusters, k, cluster_list, subtype, h)
 
     return i, k
