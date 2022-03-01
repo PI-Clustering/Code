@@ -52,7 +52,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print(colored("Starting to query on ", "red"),
           colored(DBname, "red"), colored(":", "red"))
     t1 = time.perf_counter()
-    graph, edges = lecture_graph(driver)
+    graph, edges = lecture_graph(driver, params['query_edge'])
     t1f = time.perf_counter()
 
     step1 = t1f - t1  # time to complete step 1
@@ -63,7 +63,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
 
     print(colored("Data sampling : ", "blue"))
     ts = time.perf_counter()
-    trainning_graph = sampling(graph, params["has_limit"] , int(params["limit_to"]))
+    trainning_graph = sampling(graph, int(params["limit_to"]))
     tsf = time.perf_counter()
     steps = tsf - ts  # time to complete the sampling step
     print(colored("Separating done.", "green"))

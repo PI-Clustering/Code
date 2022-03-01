@@ -9,7 +9,7 @@ from .node import Graph, Node
 from time import time
 
 
-def lecture_graph(driver):
+def lecture_graph(driver, edge):
     with driver.session() as session:
 
         # We do one query to get all differents set of labels
@@ -31,10 +31,13 @@ def lecture_graph(driver):
         print(colored("Done.", "green"))
         printb(graph)
 
-        print(colored("Querying neo4j to get all the edges:", "yellow"))
-        query = "MATCH (n)-[r]->(m) \
-                RETURN DISTINCT labels(n),keys(n),type(r),labels(m),keys(m)"
-        edges_a = session.run(query)
-        edges = [e for e in edges_a]
+        edges = None
+        if edge:
+            print(colored("Querying neo4j to get all the edges:", "yellow"))
+            query = "MATCH (n)-[r]->(m) \
+                    RETURN DISTINCT labels(n),keys(n),type(r),labels(m),keys(m)"
+            edges_a = session.run(query)
+            edges = [e for e in edges_a]
+            print(colored("Done.", "green"))
     
         return graph, edges

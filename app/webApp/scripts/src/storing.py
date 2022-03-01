@@ -54,50 +54,49 @@ def storing(cluster, edges, name):
                     i, _ = rec_storing(sous_cluster, writer,
                                        i, parent_id, run_clusters, k, cluster_list, esubtype, h)
 
-    print(cluster_list)
-    print(esubtype)
-    N = len(cluster_list)
-    tab = [[0 for _ in range(N)] for _ in range(N)]
-
-    for edge in edges:
-        ln = set(edge["labels(n)"])
-        pn = set(edge["keys(n)"])
-        n = Node(ln,pn)
-        cn = 0
-        for i in range(1,N):
-            if cluster_list[i].get_son() == [] and n in cluster_list[i]._nodes:
-                cn = i
-
-        lm = set(edge["labels(m)"])
-        pm = set(edge["keys(m)"])
-        m = Node(lm,pm)
-        cm = 0
-        for i in range(1,N):
-            if cluster_list[i].get_son() == [] and m in cluster_list[i]._nodes:
-                cm = i
-
-        print(cn,cm)
-        t = edge["type(r)"]
-        tab[cn][cm] = t
-
-    print(tab)
-
-
     with open(os.path.join(dirname, "../graph/edge.csv"), "w") as f:
+
         writer = csv.writer(f)
         header = ["id1", "id2", "types"]
         writer.writerow(header)
 
-        for i in range(1,N):
-            for j in range(1,N):
-                if tab[i][j] != 0 and i != j:
-                    writer.writerow([str(i),str(j),tab[i][j]])
+        if edges != None:
+
+            N = len(cluster_list)
+            tab = [[0 for _ in range(N)] for _ in range(N)]
+
+            for edge in edges:
+                ln = set(edge["labels(n)"])
+                pn = set(edge["keys(n)"])
+                n = Node(ln,pn)
+                cn = 0
+                for i in range(1,N):
+                    if cluster_list[i].get_son() == [] and n in cluster_list[i]._nodes:
+                        cn = i
+
+                lm = set(edge["labels(m)"])
+                pm = set(edge["keys(m)"])
+                m = Node(lm,pm)
+                cm = 0
+                for i in range(1,N):
+                    if cluster_list[i].get_son() == [] and m in cluster_list[i]._nodes:
+                        cm = i
+
+                t = edge["type(r)"]
+                tab[cn][cm] = t
+
+
+
+            for i in range(1,N):
+                for j in range(1,N):
+                    if tab[i][j] != 0 and i != j:
+                        writer.writerow([str(i),str(j),tab[i][j]])
 
         for p in esubtype:
             writer.writerow([str(p[0]), str(p[1]), "SUBTYPE_OF"])
 
 
-    return "node.csv et edge.csv"
+    return "node.csv,edge.csv"
 
 
 def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list, subtype, h):

@@ -7,11 +7,7 @@ from .node import Graph, Node
 from math import ceil
 
 
-def sampling(graph, boolean, percent):
-    if not boolean:
-        return graph
-
-    # get the number of occurrences of each node in a variable
+def sampling(graph, percent):
     new_graph = Graph()
 
     for node in graph.get_nodes():
