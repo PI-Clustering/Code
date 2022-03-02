@@ -15,10 +15,20 @@ from .node import Node, Graph, Cluster
 from .clustering_algo import clustering
 from .sampling import sampling
 from .storing import storing
+from .eval_quality import eval_quality
+from ...models import Benchmark, DataPoint
+from ..settings import global_variable
 
 
 def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
+    
     print(colored("Schema inference using Gaussian Mixture Model clustering on PG\n", "red"))
+    
+    try:
+        a = 0
+    except:
+        a += 1
+    print(a)
 
     print(params)
     #{'dataset': 'ldbc', 'method': 'k-mean', 'has_limit': False, 'limit_to': 5, 'use_incremental': False, 'nb_subcluster': 1}
@@ -26,6 +36,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     uri = ""
     user = ""
     passwd = ""
+
 
     if (params['dataset'] == 'ldbc'):
         DBname = "ldbc" 
@@ -44,7 +55,6 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
         passwd = "1234"
     else:
         exit(1)
-        
     # Connection a la base de donnée Neo4j
     # set encrypted to False to avoid possible errors
     driver = GraphDatabase.driver(uri, auth=(user, passwd), encrypted=False)
@@ -54,6 +64,16 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     t1 = time.perf_counter()
     graph, edges = lecture_graph(driver, params['query_edge'])
     t1f = time.perf_counter()
+
+
+    bm = Benchmark.objects.create(
+        algo_type='Compute cluster',
+        data_set=params['dataset'],
+        n_iterations=0,
+        size=sum(graph._node_occurs.values()),
+
+    )
+    global_variable("bm", bm)
 
     step1 = t1f - t1  # time to complete step 1
     print(colored("Queries are done.", "green"))
@@ -81,10 +101,11 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print("Step 2: Clustering was completed in ", step2, "s")
 
     print("---------------")
-
     print(colored("Writing file and identifying subtypes :", "red"))
     t3 = time.perf_counter()
     file = storing(cluster, edges, params['dataset'])
+    if params["evaluate"]:
+        eval_quality()
     t3f = time.perf_counter()
 
     step3 = t3f - t3  # time to complete step 3

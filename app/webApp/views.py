@@ -22,7 +22,7 @@ from .scripts.driver import get_benchmark
 from .models import Benchmark, DataPoint
 from .forms import UploadFileForm, ParametersForm, NodesForm
 from .scripts.src.main import algorithm_script
-
+from .scripts.src.incremental_scheme import run_add_node
 
 class BenchmarkListView(ListView):
     model = Benchmark
@@ -185,6 +185,7 @@ def AddNode(request):
             data = form.cleaned_data
             # Do something
             # run_function(data)
+            run_add_node(data)
             # redirect to a new URL:
             return HttpResponseRedirect('/Results')
 
@@ -202,21 +203,8 @@ def RunAlgo(request):
             data = form.cleaned_data
             # execute query on Neo...
             # make this async
+            print(1)
             results = algorithm_script(data)
-            bm = Benchmark.objects.create(
-                algo_type='Emile method',
-                data_set='emile',
-                n_iterations=20,
-                size=20)
-            DataPoint.objects.create(
-                benchmark=bm,
-                iteration_no=1,
-                ami=0.5,
-                f_score=0.5,
-                t_pre=0.5,
-                t_cluster=0.5,
-                t_write=0.5
-            )
             # redirect to a new URL:
             return HttpResponseRedirect('/Results')
 

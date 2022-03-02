@@ -2,10 +2,21 @@ from sklearn.semi_supervised import LabelSpreading
 from .clustering_algo import *
 from .node import *
 from copy import deepcopy
+from ...models import Benchmark
+from ..settings import global_variable
 
+def run_add_node(data):
+    global a
+    try:
+        a += 1
+    except:
+        a = 0
+    print(a)
 
-def add_node(cluster, node):
+def add_node(node):
     """ This function add a node to a cluster (it has to be the main one). """
+    global global_cluster
+    cluster = global_cluster
     cluster.add_node(node)
     cluster._modification += 1
 
@@ -53,11 +64,13 @@ def add_node_rec(cluster, node):
             "We shouldn't be in this situation, as the minimum distance, 0, is supposed to be reached")
 
 
-def add_node_exact(cluster, dict_node):
+def add_node_exact(dict_node):
     """
     The point of this function is to insert a node, exactly as if we were recomputing everything,
     computing only the part we didn't already compute.
     """
+    global global_cluster
+    cluster = global_cluster
 
     pre_computed = dict()
     get_all_cluster(cluster, pre_computed)
@@ -156,9 +169,10 @@ def get_all_cluster(cluster,res):
     for son in cluster.get_son():
         get_all_cluster(son, res)
 
-def add_node_hybrid(cluster, node):
+def add_node_hybrid(node):
     """Insert a node in our cluster not recalculating GMM as lon as the reference node shoudl not change"""
-
+    global global_cluster
+    cluster = global_cluster
     cluster.add_node(node)
     cluster.add_node(node)
     labs = node.get_labels()

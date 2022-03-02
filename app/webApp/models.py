@@ -7,6 +7,7 @@ class Benchmark(models.Model):
     n_iterations = models.IntegerField()
     size = models.IntegerField()
 
+
     def __str__(self):
         return self.algo_type + self.data_set
 
