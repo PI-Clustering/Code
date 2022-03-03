@@ -24,4 +24,5 @@ urlpatterns = [
     path('Method2/', views.Method2.as_view(), name='Method2'),
     path('node.csv', views.node_csv),
     path('edge.csv', views.edge_csv),
+    path('bench.jpg', views.bench_jpg)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

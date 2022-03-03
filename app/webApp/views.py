@@ -50,6 +50,9 @@ def edge_csv(request):
     response = FileResponse(open("webApp/scripts/graph/edge.csv","rb"))
     return response
 
+def bench_jpg(request):
+    response = FileResponse(open("webApp/scripts/graph/bench.jpg","rb"))
+    return response
 def handle_uploaded_file(f):
     with open('some/file/name.txt', 'wb+') as destination:
         for chunk in f.chunks():
