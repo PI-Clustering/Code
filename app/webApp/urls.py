@@ -12,7 +12,8 @@ app_name = "webApp"
 urlpatterns = [
     path('', views.Index.as_view(), name='Home'),
     path('Dashboard/', views.Dashboard, name='Dashboard'),
-    path('Results/', views.BenchmarkListView.as_view(), name='Results'),
+    path('Benchmarks/', views.BenchmarkListView.as_view(), name='Benchmarks'),
+    path('Results/', views.Results, name='Results'),
     path('AddNode/', views.AddNode, name='AddNode'),
     path('GetChartData/', views.get_chart_data),
     path('Submit/', views.RunAlgo, name='Submit'),
