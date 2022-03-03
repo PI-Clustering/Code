@@ -1,22 +1,129 @@
+import numpy as np
+import random
+
 from sklearn.semi_supervised import LabelSpreading
+
+from .eval_quality import eval_quality
 from .clustering_algo import *
 from .node import *
 from copy import deepcopy
-from ...models import Benchmark
+from ...models import Benchmark, DataPoint
 from ..settings import global_variable
+from .storing import storing
 
 def run_add_node(data):
-    global a
-    try:
-        a += 1
-    except:
-        a = 0
-    print(a)
+    
+    t = time()
+
+    nb_nodes = data['how_many']
+
+    if data["use_real_data"]:
+        unused = global_variable("unused")
+        N = sum(unused.values())
+        if N >= nb_nodes:
+            add_data = dict()
+            p = nb_nodes/N
+            for node in unused:
+                nb = np.random.binomial(unused[node], p)
+                if nb != 0:
+                    add_data[node] = nb
+                    unused[node] -= nb
+            global_variable("unused", unused)
+
+        else:
+            add_data = unused
+            global_variable("unused", dict())
+            old_data = global_variable("cluster").get_nodes()
+            p = min((N - nb_nodes)/sum(old_data.values()), 1)
+            for node in old_data:
+                nb = np.random.binomial(old_data[node], p)
+                if nb != 0:
+                    if node in add_data:
+                        add_data[node] += nb
+                    else:
+                        add_data[node] = nb
+    
+
+    else:
+
+        old_data = global_variable("cluster")
+        nodes = set(old_data.get_nodes())
+        labs = set()
+        props = set()
+        for node in nodes:
+            labs.union(node.get_labels())
+            props.union(node.get_properties())
+        
+        add_data = dict()
+        for _ in range(nb_nodes):
+            k = np.random.binomial(len(labs), 0.5)
+            lab = set(random.sample(labs, k))
+            k = np.random.binomial(len(props), 0.5)
+            prop = set(random.sample(props, k))
+            node = Node(lab, prop)
+            if node in add_data:
+                add_data[node] += 1
+            else:
+                add_data[node] = 1
+
+    step1 = t - time()
+
+    bm = global_variable("bm")
+
+    name_data = bm.data_set
+
+    bm = Benchmark.objects.create(
+        algo_type='Adding node with ' + data['method'] + ' method',
+        data_set= name_data,
+        n_iterations=0,
+        size=sum(global_variable("cluster").get_nodes().values()) + sum(add_data.values())
+    )
+
+    global_variable("bm", bm)
+
+    global_variable("history", [])
+    t = time()
+    global_variable("time_start", t)
+    if data['method'] == "incremental":
+        list_add_node = []
+        for node in add_data:
+            list_add_node += [node]*add_data[node]
+        list_add_node = random.sample(list_add_node, len(list_add_node))
+        for node in list_add_node:
+            add_node(node)
+
+    elif data['method'] == "median":
+        list_add_node = []
+        for node in add_data:
+            list_add_node += [node]*add_data[node]
+        list_add_node = random.sample(list_add_node, len(list_add_node))
+        for node in list_add_node:
+            add_node_hybrid(node)
+
+    elif data['method'] == 'exact':
+        add_node_exact(add_data)
+
+    step2 = time() - t
+
+    t = time()
+    storing(global_variable("cluster"), None, name_data)
+    if data['evalutate']:
+        eval_quality()
+    step3 = time() - t
+
+    Benchmark.objects.filter(pk=bm.pk).update(t_pre = step1, t_cluster = step2, t_write = step3)
+
+    return {
+        "t_pre": step1,
+        "t_cluster": step2,
+        "t_write": step3,
+    }
+
 
 def add_node(node):
     """ This function add a node to a cluster (it has to be the main one). """
-    global global_cluster
-    cluster = global_cluster
+
+    cluster = global_variable("cluster")
     cluster.add_node(node)
     cluster._modification += 1
 
@@ -42,6 +149,10 @@ def add_node(node):
 
 def add_node_rec(cluster, node):
     """This function goes recursivly to insert a node, and only take subclusters ( created with gmm, not by the lab_set )  """
+
+    t = time()
+    b = deepcopy(global_variable("cluster"))
+    global_variable("history").append((t, b))
 
     cluster.add_node(node)
 
@@ -69,8 +180,7 @@ def add_node_exact(dict_node):
     The point of this function is to insert a node, exactly as if we were recomputing everything,
     computing only the part we didn't already compute.
     """
-    global global_cluster
-    cluster = global_cluster
+    cluster = global_variable("cluster")
 
     pre_computed = dict()
     get_all_cluster(cluster, pre_computed)
@@ -110,6 +220,11 @@ def add_node_exact(dict_node):
 
 
 def add_node_exact_rec(cluster, pre_computed):
+
+    t = time()
+    b = deepcopy(global_variable("cluster"))
+    global_variable("history").append((t, b))
+
 
     nb_cluster = len(cluster.get_son())
 
@@ -157,8 +272,9 @@ def add_node_exact_rec(cluster, pre_computed):
             if id in pre_computed:
                 cluster.add_son(pre_computed[id])
             elif len(id) > 0:
-                add_node_exact_rec(new_clusters[i], pre_computed)
                 cluster.add_son(new_clusters[i])
+                add_node_exact_rec(new_clusters[i], pre_computed)
+                
 
                 
 
@@ -171,8 +287,7 @@ def get_all_cluster(cluster,res):
 
 def add_node_hybrid(node):
     """Insert a node in our cluster not recalculating GMM as lon as the reference node shoudl not change"""
-    global global_cluster
-    cluster = global_cluster
+    cluster = global_variable("cluster")
     cluster.add_node(node)
     cluster.add_node(node)
     labs = node.get_labels()
@@ -187,6 +302,10 @@ def add_node_hybrid(node):
 
 
 def add_node_hybrid_rec(cluster, node):
+
+    t = time()
+    b = deepcopy(global_variable("cluster"))
+    global_variable("history").append((t, b))
 
     cluster.add_node(node)
 

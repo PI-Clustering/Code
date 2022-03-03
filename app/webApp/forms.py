@@ -12,7 +12,7 @@ DATASET_CHOICES = [
     ('covid-19', 'Covid 19'),
     ('fib25', 'FIB 25')
 ]
-ALGO_CHOICES2 = [('incr', 'incremental'), ('inter', 'median'), ('exact', 'exact')]
+ALGO_CHOICES2 = [('incremental', 'incremental'), ('median', 'median'), ('exact', 'exact')]
 
 class ParametersForm(forms.Form):
 
@@ -57,14 +57,19 @@ class NodesForm(forms.Form):
     )
     how_many = forms.IntegerField(
         required=True,
-        initial=2,
-        min_value=2,
+        initial=1,
+        min_value=1,
         label="How many nodes to add?"
     )
-    use_virtual_data = forms.BooleanField(
+    use_real_data = forms.BooleanField(
         required=False,
-        label="Use Virtual Data?"
+        label="Use Real Data?"
     )
+    evaluate = forms.BooleanField(
+        required=False,
+        label="Evaluate the cluster ?"
+    )
+
 
 
 class DocumentForm(forms.ModelForm):

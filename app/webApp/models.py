@@ -6,6 +6,9 @@ class Benchmark(models.Model):
     data_set = models.CharField(max_length=20)
     n_iterations = models.IntegerField()
     size = models.IntegerField()
+    t_pre = models.DecimalField(max_digits=5, decimal_places=2)
+    t_cluster = models.DecimalField(max_digits=5, decimal_places=2)
+    t_write = models.DecimalField(max_digits=5, decimal_places=2)
 
 
     def __str__(self):

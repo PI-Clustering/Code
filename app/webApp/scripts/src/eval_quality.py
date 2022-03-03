@@ -53,9 +53,9 @@ def eval_quality():
         if k ==1:
             k+=1
             continue
+
         computed_cluster = []
         get_set_cluster(c, computed_cluster)
-        print(sum([len(a) for a in computed_cluster]), end = " ")
         X = [set() for _ in range(len(computed_cluster))]
         for node in test_data:
             if node in cluster.get_nodes():
@@ -70,17 +70,18 @@ def eval_quality():
                         X[i].add(node)
                         break
 
-        a = normalized_mutual_info(set(test_data), X, Y)
-        b = adjusted_random_index(set(test_data), X, Y)
-        c = t - global_variable("time_start")
+        a = normalized_mutual_info(set(test_data), X, Y)+0.0001
+        b = adjusted_random_index(set(test_data), X, Y)+0.0001
+        c = t - global_variable("time_start")+0.0001
+
 
         DataPoint.objects.create(
             benchmark = bm,
             iteration_no = k,
-            ami = a,
-            f_score = b,
+            ami = a+0.0001,
+            f_score = b+0.0001,
             t_pre = 0.5, #Random values because I can't remove it
-            t_cluster = c+0.0000001,
+            t_cluster = c+0.0001,
             t_write = 0.5 #Same as t_pre
         )
 
@@ -91,16 +92,33 @@ def eval_quality():
 
         k+=1
     
+    plt.plot(ite, Xlist)
+    plt.plot(ite, Ylist)
+    plt.show()
+    plt.plot(tlist, ite)
+    plt.show()
 
 
-def get_set_cluster(cluster, res):
-    
-    s = set(cluster.get_nodes())
-    for c in cluster.get_son():
-        get_set_cluster(c, res)
-        s = s - set(c.get_nodes())
-    if s != set():
-        res.append(s)
+def get_set_cluster(cluster, res, lab_set = None):
+
+    if lab_set == None:
+        s = set(cluster.get_nodes())
+        sons = cluster.get_son()
+        for i in range(len(cluster._cutting_values)):
+            get_set_cluster(sons[i], res, cluster._cutting_values[i])
+            try:
+                s = s - res[-1]
+            except:
+                pass
+        if s != set():
+            res.append(s)
+    else:
+        s = set(filter( lambda node : node.get_labels() == lab_set ,cluster.get_nodes()))
+        for c in cluster.get_son():
+            get_set_cluster(c, res, lab_set)
+            s = s - set(c.get_nodes())
+        if s != set():
+            res.append(s)
 
 
 def mutual_info(S,U,V):
@@ -239,7 +257,7 @@ def normalized_mutual_info(S,U,V):
         for j in range(C):
             a_i = int(A[i])
             b_j = int(B[j])
-            ind_start = max(1,a_i+b_j-N + 1)
+            ind_start = max(1,a_i+b_j-N+1)
 
             for ind in range(ind_start, min(a_i,b_j)+1):
                 # approximations with indexes can disturb the final value

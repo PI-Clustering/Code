@@ -23,14 +23,7 @@ from ..settings import global_variable
 def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     
     print(colored("Schema inference using Gaussian Mixture Model clustering on PG\n", "red"))
-    
-    try:
-        a = 0
-    except:
-        a += 1
-    print(a)
 
-    print(params)
     #{'dataset': 'ldbc', 'method': 'k-mean', 'has_limit': False, 'limit_to': 5, 'use_incremental': False, 'nb_subcluster': 1}
     DBname = ""
     uri = ""
@@ -65,14 +58,18 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     graph, edges = lecture_graph(driver, params['query_edge'])
     t1f = time.perf_counter()
 
+    print(1)
 
     bm = Benchmark.objects.create(
         algo_type='Compute cluster',
         data_set=params['dataset'],
         n_iterations=0,
         size=sum(graph._node_occurs.values()),
-
+        t_pre = 0,
+        t_cluster = 0,
+        t_write = 0
     )
+    print(2)
     global_variable("bm", bm)
 
     step1 = t1f - t1  # time to complete step 1
@@ -111,8 +108,13 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     step3 = t3f - t3  # time to complete step 3
     print(colored("Writing done.", "green"))
     print("Step 3: Identifying subtypes and storing to file was completed in", step3, "s")
+    
+    Benchmark.objects.filter(pk=bm.pk).update(t_pre = step1, t_cluster = step2, t_write = step3)
+
+
     return {
         "t_pre": step1,
         "t_cluster": step2,
         "t_write": step3,
     }
+

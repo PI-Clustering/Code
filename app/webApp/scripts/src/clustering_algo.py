@@ -38,8 +38,8 @@ def clustering(graph, nb_cluster):
         # search for all subclusters
         new_cluster._nodes = correct_nodes
         if len(correct_nodes) != 0:
-            rec_clustering(new_cluster, nb_cluster)
             cluster.add_son(new_cluster)
+            rec_clustering(new_cluster, nb_cluster)
             new_cluster._name = ":".join(list(lab_set))
 
     t = time()
@@ -107,8 +107,9 @@ def rec_clustering(cluster, nb_cluster=2):
         # if the cluster is new and if not empty (ie. there are two found clusters)
             if set_cluster != set():
                 # search for more subclusters in this subcluster
-                rec_clustering(new_clusters[i], nb_cluster)
                 cluster.add_son(new_clusters[i])
+                rec_clustering(new_clusters[i], nb_cluster)
+                
 
 
 def max_labs_props(correct_node, n=1):

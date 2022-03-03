@@ -203,7 +203,6 @@ def RunAlgo(request):
             data = form.cleaned_data
             # execute query on Neo...
             # make this async
-            print(1)
             results = algorithm_script(data)
             # redirect to a new URL:
             return HttpResponseRedirect('/Results')
