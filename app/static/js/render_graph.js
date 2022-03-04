@@ -9,6 +9,7 @@ d3.csv('/node.csv', function (d) {
   d.id = +d.id;
   d.name = d.id;
   d.color = +d.id;
+  d.number = +d.number;
   return d;
 }).then(function (dnodes) {
   var dlinks = []
@@ -52,7 +53,7 @@ d3.csv('/node.csv', function (d) {
 
     node
       .append('circle')
-      .attr('r', 20)
+      .attr('r', function(d){ return 4*Math.log(d.number)} )
       .style('fill', function (d, i) {
         return colors(d.color);
       });
@@ -91,7 +92,7 @@ d3.csv('/node.csv', function (d) {
           .id(function (d) {
             return d.id;
           })
-          .distance(1000)
+          .distance(700)
           .strength(1)
           .links(dlinks)
       )

@@ -23,7 +23,7 @@ def storing(cluster, edges, name):
 
     with open(os.path.join(dirname, "../graph/node.csv"), "w")as f:
         writer = csv.writer(f)
-        header = ["id", "labels", "properties", "profondeur"]
+        header = ["id", "labels", "properties", "profondeur", "number"]
         writer.writerow(header)
 
         # iterate through each basic type clusters
@@ -36,6 +36,7 @@ def storing(cluster, edges, name):
             data_line.append(labels)  # labels
             data_line.append("")  # no properties for base types
             data_line.append("1")  # the name of the infered type
+            data_line.append(str(basic_type.get_number_node())) # bombre de npeud
 
             writer.writerow(data_line)
             cluster_list.append(basic_type)
@@ -172,6 +173,7 @@ def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list, su
         data_line.append(labels)
         data_line.append(properties)
         data_line.append(str(k))
+        data_line.append(str(cluster.get_number_node())) # bombre de npeud
 
         writer.writerow(data_line)
         cluster_list.append(cluster)

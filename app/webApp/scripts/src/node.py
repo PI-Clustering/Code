@@ -113,3 +113,6 @@ class Cluster:
             return {frozenset(cluster._nodes().items()) : l for cluster in l}
         else:
             return self._sons_id
+
+    def get_number_node(self):
+        return sum(self._nodes.values())
