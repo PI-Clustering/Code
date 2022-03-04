@@ -76,7 +76,10 @@ def run_add_node(data):
         algo_type='Adding node with ' + data['method'] + ' method',
         data_set= name_data,
         n_iterations=0,
-        size=sum(global_variable("cluster").get_nodes().values()) + sum(add_data.values())
+        size=sum(global_variable("cluster").get_nodes().values()) + sum(add_data.values()),
+        t_pre = 0,
+        t_cluster = 0,
+        t_write = 0
     )
 
     global_variable("bm", bm)
@@ -107,7 +110,7 @@ def run_add_node(data):
 
     t = time()
     storing(global_variable("cluster"), None, name_data)
-    if data['evalutate']:
+    if data['evaluate']:
         eval_quality()
     step3 = time() - t
 
@@ -149,7 +152,7 @@ def add_node(node):
 
 def add_node_rec(cluster, node):
     """This function goes recursivly to insert a node, and only take subclusters ( created with gmm, not by the lab_set )  """
-
+    print(1)
     t = time()
     b = deepcopy(global_variable("cluster"))
     global_variable("history").append((t, b))
@@ -161,11 +164,14 @@ def add_node_rec(cluster, node):
     cuts = cluster._cutting_values
     list_son = cluster.get_son()
 
+    print(cuts)
+    print(list_son)
+
     if cuts != []:
 
         # We set this value in order to be sure to find a place for the node
         cuts[0] = 0
-
+        
         for i in range(len(cuts)-1, -1, -1):
             if d >= cuts[i]:
                 add_node_rec(list_son[i], node)
@@ -206,14 +212,14 @@ def add_node_exact(dict_node):
         if labs not in cluster._cutting_values:  # That mean we have a new type of node with a new set of label
             new_cluster = Cluster()
             correct_nodes = dict()
-            cluster._cutting_values.append(labs)
             correct_nodes[node] = 1
             for node_c in nodes_cluster:
                 if labs.issubset(node_c.get_labels()):
                     correct_nodes[node_c] = nodes_cluster[node_c]
                     new_cluster._nodes = correct_nodes
-            rec_clustering(new_cluster)
+            cluster._cutting_values.append(labs)
             cluster.add_son(new_cluster)
+            rec_clustering(new_cluster)
             new_cluster._name = ":".join(list(labs))
 
     return cluster

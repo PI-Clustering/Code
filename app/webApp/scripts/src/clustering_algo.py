@@ -28,7 +28,6 @@ def clustering(graph, nb_cluster):
     for lab_set in graph.get_sets_labels():
         new_cluster = Cluster()
         correct_nodes = dict()
-        cluster._cutting_values.append(lab_set)
         # iterate through each different node
         for node in graph.distinct_node():
 
@@ -38,6 +37,7 @@ def clustering(graph, nb_cluster):
         # search for all subclusters
         new_cluster._nodes = correct_nodes
         if len(correct_nodes) != 0:
+            cluster._cutting_values.append(lab_set)
             cluster.add_son(new_cluster)
             rec_clustering(new_cluster, nb_cluster)
             new_cluster._name = ":".join(list(lab_set))
@@ -109,7 +109,8 @@ def rec_clustering(cluster, nb_cluster=2):
                 # search for more subclusters in this subcluster
                 cluster.add_son(new_clusters[i])
                 rec_clustering(new_clusters[i], nb_cluster)
-                
+            else:
+                cluster._cutting_values.pop(i)
 
 
 def max_labs_props(correct_node, n=1):

@@ -1,4 +1,6 @@
 ##### Imports
+from decimal import Decimal
+
 import numpy as np
 import math
 import hdbscan
@@ -69,34 +71,45 @@ def eval_quality():
                     if node_cloth in computed_cluster[i]:
                         X[i].add(node)
                         break
+    
 
-        a = normalized_mutual_info(set(test_data), X, Y)+0.0001
-        b = adjusted_random_index(set(test_data), X, Y)+0.0001
+        a = normalized_mutual_info(set(test_data), X, Y)
+        b = adjusted_random_index(set(test_data), X, Y)
         c = t - global_variable("time_start")+0.0001
 
+        try:
+            DataPoint.objects.create(
+                benchmark = bm,
+                iteration_no = k,
+                ami = a,
+                f_score = b,
+                t_pre = 0, #Random values because I can't remove it
+                t_cluster = c,
+                t_write = 0.5 #Same as t_pre
+            )
 
-        DataPoint.objects.create(
-            benchmark = bm,
-            iteration_no = k,
-            ami = a+0.0001,
-            f_score = b+0.0001,
-            t_pre = 0.5, #Random values because I can't remove it
-            t_cluster = c+0.0001,
-            t_write = 0.5 #Same as t_pre
-        )
-
-        ite.append(k)
-        Xlist.append(a)
-        Ylist.append(b)
-        tlist.append(c)
-
+            ite.append(k)
+            Xlist.append(a)
+            Ylist.append(b)
+            tlist.append(c)
+        except:
+            pass
         k+=1
-    
-    plt.plot(ite, Xlist)
-    plt.plot(ite, Ylist)
-    plt.show()
+
+    plt.subplot(2,1,1)
+    plt.plot(ite, Xlist, label= "Ami with HDBScan")
+    plt.plot(ite, Ylist, label= "EMI with HDBScan")
+    plt.ylim(0,1)
+    plt.legend()
+    plt.title("Evaluation of the cluster at each iteration")
+
+
+    plt.subplot(2,1,2)
     plt.plot(tlist, ite)
-    plt.show()
+    plt.xlabel("t (en s)")
+    plt.title("Iteration realized according to time")
+    plt.savefig("./webApp/scripts/graph/bench.jpg")
+    plt.close()
 
 
 def get_set_cluster(cluster, res, lab_set = None):
@@ -135,7 +148,7 @@ def mutual_info(S,U,V):
     V : Python list of sets
         Represents another partition of S set
         Its format is : [{string2, string11,...}, {string3, string10, ...} ...]
-
+Inf
     Returns
     -------
     M : Float
@@ -218,6 +231,7 @@ def normalized_mutual_info(S,U,V):
     
     MI,HU,HV = mutual_info(S,U,V)
 
+
     R = len(U)
     C = len(V)
 
@@ -257,21 +271,23 @@ def normalized_mutual_info(S,U,V):
         for j in range(C):
             a_i = int(A[i])
             b_j = int(B[j])
-            ind_start = max(1,a_i+b_j-N+1)
+            ind_start = max(1,a_i+b_j-N)
 
-            for ind in range(ind_start, min(a_i,b_j)+1):
+            for ind in range(ind_start, min(a_i,b_j)):
                 # approximations with indexes can disturb the final value
                 if (a_i-ind) <= 0:
                     fact_ai = 1
                 else:
-                    fact_ai = math.gamma(a_i-ind)
+                    fact_ai = math.factorial(a_i-ind)
                 if (b_j-ind) <= 0:
                     fact_bj = 1
                 else:
-                    fact_bj = math.gamma(b_j-ind)
-                EMI += (math.gamma(N-a_i)/math.factorial(N))*(math.gamma(N-b_j)/math.gamma(N-a_i-b_j+ind))*(ind/N)*math.log(N*ind/(a_i*b_j))*(math.gamma(a_i)*math.gamma(b_j))/(math.factorial(ind)*fact_ai*fact_bj)
-
-    return (MI-EMI)/(max(HU,HV)-EMI)
+                    fact_bj = math.factorial(b_j-ind)
+                print(N, a_i, b_j, ind)
+                EMI += Decimal(math.factorial(N-a_i))/Decimal(math.factorial(N))*Decimal(math.factorial(N-b_j))/Decimal(math.factorial(N-a_i-b_j+ind))*Decimal((ind/N)*math.log(N*ind/(a_i*b_j)))*Decimal(math.factorial(a_i)*math.factorial(b_j))/Decimal(math.factorial(ind)*fact_ai*fact_bj)
+             
+    EMI = float(EMI)
+    return ((MI-EMI)/(max(HU,HV)-EMI))
 
 
 

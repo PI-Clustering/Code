@@ -5,6 +5,7 @@ from typing import Dict
 from termcolor import colored
 import csv
 import time
+import os
 
 # Neo4j imports
 from neo4j import GraphDatabase
@@ -30,6 +31,59 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     user = ""
     passwd = ""
 
+    if params['use_precomputed']:
+    
+        dirname = os.path.dirname(__file__)
+        
+        if (params['dataset'] == 'ldbc'):
+            os.system("cp " + str(os.path.join(dirname, "../graph/node_ldbc.csv")) + " " + str(os.path.join(dirname, "../graph/node.csv")))
+            os.system("cp " + str(os.path.join(dirname, "../graph/edge_ldbc.csv")) + " " + str(os.path.join(dirname, "../graph/edge.csv")))
+            os.system("cp " + str(os.path.join(dirname, "../graph/bench_ldbc.jpg")) + " " + str(os.path.join(dirname, "../graph/bench.jpg")))
+            bm = Benchmark.objects.create(
+                algo_type='Compute cluster',
+                data_set=params['dataset'],
+                n_iterations=10,
+                size=2544841,
+                t_pre = 5.94,
+                t_cluster = 0.10,
+                t_write = 0.42
+            )
+            global_variable("bm", bm)
+
+        elif (params['dataset'] == 'covid-19'):
+            os.system("cp " + str(os.path.join(dirname, "../graph/node_covid-19.csv")) + " " + str(os.path.join(dirname, "../graph/node.csv")))
+            os.system("cp " + str(os.path.join(dirname, "../graph/edge_covid-19.csv")) + " " + str(os.path.join(dirname, "../graph/edge.csv")))
+            os.system("cp " + str(os.path.join(dirname, "../graph/bench_covid-19.jpg")) + " " + str(os.path.join(dirname, "../graph/bench.jpg")))
+            bm = Benchmark.objects.create(
+                algo_type='Compute cluster',
+                data_set=params['dataset'],
+                n_iterations=275,
+                size=28820284,
+                t_pre = 24.09,
+                t_cluster = 124.03,
+                t_write = 203.55
+            )
+            global_variable("bm", bm)
+        elif (params['dataset'] == 'fib25'):
+            os.system("cp " + str(os.path.join(dirname, "../graph/node_fib25.csv")) + " " + str(os.path.join(dirname, "../graph/node.csv")))
+            os.system("cp " + str(os.path.join(dirname, "../graph/edge_fib25.csv")) + " " + str(os.path.join(dirname, "../graph/edge.csv")))
+            os.system("cp " + str(os.path.join(dirname, "../graph/bench_fib25.jpg")) + " " + str(os.path.join(dirname, "../graph/bench.jpg")))
+            bm = Benchmark.objects.create(
+                algo_type='Compute cluster',
+                data_set=params['dataset'],
+                n_iterations=28,
+                size=641921,
+                t_pre = 0.97,
+                t_cluster = 3.24,
+                t_write = 0.52
+            )
+            global_variable("bm", bm)
+
+        else:
+            exit(1)
+        
+        return (0,0,0)
+        
 
     if (params['dataset'] == 'ldbc'):
         DBname = "ldbc" 
@@ -50,6 +104,9 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
         exit(1)
     # Connection a la base de donnée Neo4j
     # set encrypted to False to avoid possible errors
+
+    
+
     driver = GraphDatabase.driver(uri, auth=(user, passwd), encrypted=False)
 
     print(colored("Starting to query on ", "red"),
@@ -58,19 +115,6 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     graph, edges = lecture_graph(driver, params['query_edge'])
     t1f = time.perf_counter()
 
-    print(1)
-
-    bm = Benchmark.objects.create(
-        algo_type='Compute cluster',
-        data_set=params['dataset'],
-        n_iterations=0,
-        size=sum(graph._node_occurs.values()),
-        t_pre = 0,
-        t_cluster = 0,
-        t_write = 0
-    )
-    print(2)
-    global_variable("bm", bm)
 
     step1 = t1f - t1  # time to complete step 1
     print(colored("Queries are done.", "green"))
@@ -87,6 +131,18 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print("The sampling step was processed in ", steps, "s")
 
     print("---------------")
+
+    bm = Benchmark.objects.create(
+        algo_type='Compute cluster',
+        data_set=params['dataset'],
+        n_iterations=0,
+        size=sum(trainning_graph._node_occurs.values()),
+        t_pre = 0,
+        t_cluster = 0,
+        t_write = 0
+    )
+
+    global_variable("bm", bm)
 
     print(colored("Starting to cluster data using GMM :", "red"))
     t2 = time.perf_counter()
@@ -109,7 +165,7 @@ def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
     print(colored("Writing done.", "green"))
     print("Step 3: Identifying subtypes and storing to file was completed in", step3, "s")
     
-    Benchmark.objects.filter(pk=bm.pk).update(t_pre = step1, t_cluster = step2, t_write = step3)
+    Benchmark.objects.filter(pk=bm.pk).update(t_pre = step1+steps, t_cluster = step2, t_write = step3)
 
 
     return {
