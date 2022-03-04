@@ -12,8 +12,7 @@ DATASET_CHOICES = [
     ('covid-19', 'Covid 19'),
     ('fib25', 'FIB 25')
 ]
-ALGO_CHOICES = [('k-mean', 'K-Means'), ('algo2', 'Dummy 2')]
-
+ALGO_CHOICES2 = [('incremental', 'incremental'), ('median', 'median'), ('exact', 'exact')]
 
 class ParametersForm(forms.Form):
 
@@ -22,25 +21,16 @@ class ParametersForm(forms.Form):
         choices=DATASET_CHOICES,
         label="Which dataset are you using?"
     )
-    method = forms.ChoiceField(
-        required=True,
-        choices=ALGO_CHOICES,
-        label="Which method do you want?"
-    )
-    has_limit = forms.BooleanField(
+    use_precomputed = forms.BooleanField(
         required=False,
-        label="Limit data?"
+        label="Use precomputed?"
     )
     limit_to = forms.IntegerField(
         required=False,
-        initial=100,
+        initial=80,
         min_value=1,
         max_value=100,
         label="How many percent of nodes to limit to?"
-    )
-    use_incremental = forms.BooleanField(
-        required=False,
-        label="Use Incremental Approach"
     )
     nb_subcluster = forms.IntegerField(
         required=True,
@@ -48,6 +38,38 @@ class ParametersForm(forms.Form):
         min_value=2,
         label="How many subcluster"
     )
+    query_edge = forms.BooleanField(
+        required=False,
+        label="Query edge?"
+    )
+    evaluate = forms.BooleanField(
+        required=False,
+        label="Evaluate the cluster ?"
+    )
+
+
+class NodesForm(forms.Form):
+
+    method = forms.ChoiceField(
+        required=True,
+        choices=ALGO_CHOICES2,
+        label="Which dataset are you using?"
+    )
+    how_many = forms.IntegerField(
+        required=True,
+        initial=1,
+        min_value=1,
+        label="How many nodes to add?"
+    )
+    use_real_data = forms.BooleanField(
+        required=False,
+        label="Use Real Data?"
+    )
+    evaluate = forms.BooleanField(
+        required=False,
+        label="Evaluate the cluster ?"
+    )
+
 
 
 class DocumentForm(forms.ModelForm):

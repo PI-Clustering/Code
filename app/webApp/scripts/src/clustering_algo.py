@@ -1,6 +1,9 @@
 """ Step 2 : Clustering step """
 
 # Imports
+from numpy import bmat
+from copy import deepcopy
+from time import time
 from sklearn.mixture import BayesianGaussianMixture
 from termcolor import colored
 import warnings
@@ -8,18 +11,23 @@ import random
 import math
 import hdbscan
 from time import sleep
+from ...models import Benchmark, DataPoint
+from ..settings import global_variable
 
 from .node import Node, Graph, Cluster
 
 def clustering(graph, nb_cluster):
-    cluster = Cluster("Main")
-    # warnings.filterwarnings("ignore")
 
+    global_variable("time_start", time())
+    cluster = Cluster("Main")
+    global_variable("cluster", cluster)
+    global_variable("history", [])
+    cluster._nodes = graph._node_occurs
+    # warnings.filterwarnings("ignore")
     # iterate through each different sets of labels
     for lab_set in graph.get_sets_labels():
         new_cluster = Cluster()
         correct_nodes = dict()
-        cluster._cutting_values.append(lab_set)
         # iterate through each different node
         for node in graph.distinct_node():
 
@@ -29,14 +37,30 @@ def clustering(graph, nb_cluster):
         # search for all subclusters
         new_cluster._nodes = correct_nodes
         if len(correct_nodes) != 0:
-            rec_clustering(new_cluster, nb_cluster)
+            cluster._cutting_values.append(lab_set)
             cluster.add_son(new_cluster)
+            rec_clustering(new_cluster, nb_cluster)
             new_cluster._name = ":".join(list(lab_set))
+
+    t = time()
+    b = deepcopy(cluster)
+    global_variable("history").append((t, b))
 
     return cluster
 
 
 def rec_clustering(cluster, nb_cluster=2):
+
+    global_cluster = global_variable("cluster")
+
+    t = time()
+    b = deepcopy(global_cluster)
+    global_variable("history").append((t, b))
+    
+    bm = global_variable("bm")
+    Benchmark.objects.filter(pk=bm.pk).update(n_iterations = bm.n_iterations + 1)
+    bm.refresh_from_db()
+    
     correct_nodes = cluster.get_nodes()
     # get a reference node
     ref_node = max_labs_props(correct_nodes)
@@ -83,8 +107,10 @@ def rec_clustering(cluster, nb_cluster=2):
         # if the cluster is new and if not empty (ie. there are two found clusters)
             if set_cluster != set():
                 # search for more subclusters in this subcluster
-                rec_clustering(new_clusters[i], nb_cluster)
                 cluster.add_son(new_clusters[i])
+                rec_clustering(new_clusters[i], nb_cluster)
+            else:
+                cluster._cutting_values.pop(i)
 
 
 def max_labs_props(correct_node, n=1):
@@ -170,7 +196,7 @@ def dist(a, b):
     s = len(a.get_labels().intersection(b.get_labels())) + \
         len(a.get_proprety().intersection(b.get_proprety()))
 
-    return 2*s / (len(a.get_labels()) + len(a.get_proprety()) + len(b.get_labels()) + len(b.get_proprety()))
+    return 1-2*s / (len(a.get_labels()) + len(a.get_proprety()) + len(b.get_labels()) + len(b.get_proprety()))
 
 
 def dice_coefficient(a, b):

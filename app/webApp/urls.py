@@ -12,7 +12,9 @@ app_name = "webApp"
 urlpatterns = [
     path('', views.Index.as_view(), name='Home'),
     path('Dashboard/', views.Dashboard, name='Dashboard'),
+    path('Benchmarks/', views.BenchmarkListView.as_view(), name='Benchmarks'),
     path('Results/', views.Results, name='Results'),
+    path('AddNode/', views.AddNode, name='AddNode'),
     path('GetChartData/', views.get_chart_data),
     path('Submit/', views.RunAlgo, name='Submit'),
     path('Projects/', views.Projects.as_view(), name='Projects'),
@@ -22,4 +24,5 @@ urlpatterns = [
     path('Method2/', views.Method2.as_view(), name='Method2'),
     path('node.csv', views.node_csv),
     path('edge.csv', views.edge_csv),
+    path('bench.jpg', views.bench_jpg)
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -10,14 +10,12 @@
 
 
 {% block content %}
-<div class="right_col" role="main">
-    <h1>Start algo</h1>
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit">
-    </form>
-</div>
+<h1>Start algo</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
 {% endblock content %}
 
 

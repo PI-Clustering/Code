@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" id="a" version="1.1">
+  <style>
+.edge {
+  stroke-opacity: 0.6;
+  stroke-width: 2px;
+}
+    </style>
+  <defs>
+    <marker id="arrowhead" viewBox="-0 -5 10 10" refX="18" refY="0" orient="auto" markerWidth="13" markerHeight="13">
+      <path d="M 0,-5 L 10 ,0 L 0,5" fill="#999" style="stroke: none"></path>
+    </marker>
+  </defs>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: rgb(85, 85, 85);" x1="1232.801085844782" y1="943.4947461423214" x2="1137.7660409169164" y2="602.6121708059628"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: rgb(85, 85, 85);" x1="1700.3091476669251" y1="82.688951430512" x2="1416.2164343482787" y2="250.78729771152493"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: rgb(85, 85, 85);" x1="710.1555460362705" y1="384.51915598966616" x2="1032.5719813703936" y2="459.1649025577612"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: rgb(85, 85, 85);" x1="947.0419687012001" y1="779.8780854264088" x2="1032.5719813703936" y2="459.1649025577612"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: rgb(85, 85, 85);" x1="529.8370654448485" y1="617.7175071185998" x2="869.6567045323123" y2="557.3294865188044"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: rgb(85, 85, 85);" x1="1139.6341002639433" y1="28.238149619711763" x2="1118.6565849868527" y2="349.05873720105785"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: rgb(85, 85, 85);" x1="1601.8452105327594" y1="617.3654281663826" x2="1304.0800318681938" y2="462.13139546015276"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: rgb(85, 85, 85);" x1="626.4297579960288" y1="45.01973182871747" x2="885.6741905308592" y2="300.80582881361545"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1137.7660409169164" y1="602.6121708059628" x2="1032.5719813703936" y2="459.1649025577612"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1137.7660409169164" y1="602.6121708059628" x2="1304.0800318681938" y2="462.13139546015276"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1137.7660409169164" y1="602.6121708059628" x2="869.6567045323123" y2="557.3294865188044"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1416.2164343482787" y1="250.78729771152493" x2="1304.0800318681938" y2="462.13139546015276"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1032.5719813703936" y1="459.1649025577612" x2="869.6567045323123" y2="557.3294865188044"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1032.5719813703936" y1="459.1649025577612" x2="1118.6565849868527" y2="349.05873720105785"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1032.5719813703936" y1="459.1649025577612" x2="1304.0800318681938" y2="462.13139546015276"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="869.6567045323123" y1="557.3294865188044" x2="521.0909592608741" y2="891.2138628571889"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1118.6565849868527" y1="349.05873720105785" x2="1304.0800318681938" y2="462.13139546015276"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1118.6565849868527" y1="349.05873720105785" x2="1032.5719813703936" y2="459.1649025577612"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1118.6565849868527" y1="349.05873720105785" x2="1137.7660409169164" y2="602.6121708059628"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1118.6565849868527" y1="349.05873720105785" x2="869.6567045323123" y2="557.3294865188044"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="1118.6565849868527" y1="349.05873720105785" x2="1416.2164343482787" y2="250.78729771152493"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="885.6741905308592" y1="300.80582881361545" x2="1118.6565849868527" y2="349.05873720105785"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="885.6741905308592" y1="300.80582881361545" x2="1032.5719813703936" y2="459.1649025577612"></line>
+  <line class="edge" marker-end="url(#arrowhead)" style="stroke: green;" x1="885.6741905308592" y1="300.80582881361545" x2="869.6567045323123" y2="557.3294865188044"></line>
+  <text style="font-size : x-small" transform="translate(1185.283563380849, 773.0534584741422)">IS_SUBTYPE_OF</text>
+  <text style="font-size : x-small" transform="translate(1558.262791007602, 166.73812457101846)">IS_SUBTYPE_OF</text>
+  <text style="font-size : x-small" transform="translate(871.3637637033321, 421.8420292737137)">IS_SUBTYPE_OF</text>
+  <text style="font-size : x-small" transform="translate(989.8069750357968, 619.521493992085)">IS_SUBTYPE_OF</text>
+  <text style="font-size : x-small" transform="translate(699.7468849885804, 587.5234968187021)">IS_SUBTYPE_OF</text>
+  <text style="font-size : x-small" transform="translate(373.91979385663853, 1009.4193836302238)">IS_SUBTYPE_OF</text>
+  <text style="font-size : x-small" transform="translate(1129.145342625398, 188.6484434103848)">IS_SUBTYPE_OF</text>
+  <text style="font-size : x-small" transform="translate(1452.9626212004766, 539.7484118132677)">IS_SUBTYPE_OF</text>
+  <text style="font-size : x-small" transform="translate(756.051974263444, 172.91278032116645)">IS_SUBTYPE_OF</text>
+  <text style="font-size : x-small" transform="translate(1085.169011143655, 530.888536681862)">IN_POST</text>
+  <text style="font-size : x-small" transform="translate(1220.923036392555, 532.3717831330578)">HAS_PLACE</text>
+  <text style="font-size : x-small" transform="translate(1003.7113727246144, 579.9708286623836)">HAS_TAG</text>
+  <text style="font-size : x-small" transform="translate(1360.1482331082361, 356.45934658583883)">HAS_PLACE</text>
+  <text style="font-size : x-small" transform="translate(951.1143429513529, 508.24719453828277)">HAS_TAG</text>
+  <text style="font-size : x-small" transform="translate(1075.6142831786233, 404.1118198794095)">HAS_PERSON</text>
+  <text style="font-size : x-small" transform="translate(1168.3260066192938, 460.648149008957)">HAS_PLACE</text>
+  <text style="font-size : x-small" transform="translate(695.3738318965932, 724.2716746879967)">HAS_CLASS</text>
+  <text style="font-size : x-small" transform="translate(1211.3683084275233, 405.5950663306053)">HAS_PERSON</text>
+  <text style="font-size : x-small" transform="translate(1128.2113129518846, 475.83545400351034)">HAS_COMMENT</text>
+  <text style="font-size : x-small" transform="translate(1267.4365096675656, 299.9230174562914)">HAS_ORGANISATION</text>
+  <text style="font-size : x-small" transform="translate(1002.165387758856, 324.93228300733665)">HAS_PERSON</text>
+  <text style="font-size : x-small" transform="translate(959.1230859506263, 379.9853656856883)">HAS_POST</text>
+  <text style="font-size : x-small" transform="translate(877.6654475315858, 429.0676576662099)">HAS_TAG</text>
+  <g class="node" transform="translate(1137.7660409169164, 602.6121708059628)">
+    <circle r="20" style="fill: rgb(31, 119, 180);"></circle>
+    <title></title>
+    <text dx="15" dy="20">Comment</text>
+    <text dx="15" dy="40" style="font-size : x-small"></text>
+  </g>
+  <g class="node" transform="translate(1232.801085844782, 943.4947461423214)">
+    <circle r="20" style="fill: rgb(31, 119, 180);"></circle>
+    <title>browserUsed:content:creationDate:id:length:locationIP</title>
+    <text dx="15" dy="20">Comment</text>
+    <text dx="15" dy="40" style="font-size : x-small">browserUsed:content:creat...</text>
+  </g>
+  <g class="node" transform="translate(1416.2164343482787, 250.78729771152493)">
+    <circle r="20" style="fill: rgb(255, 127, 14);"></circle>
+    <title></title>
+    <text dx="15" dy="20">Organisation</text>
+    <text dx="15" dy="40" style="font-size : x-small"></text>
+  </g>
+  <g class="node" transform="translate(1700.3091476669251, 82.688951430512)">
+    <circle r="20" style="fill: rgb(255, 127, 14);"></circle>
+    <title>id:name:type:url</title>
+    <text dx="15" dy="20">Organisation</text>
+    <text dx="15" dy="40" style="font-size : x-small">id:name:type:url</text>
+  </g>
+  <g class="node" transform="translate(1032.5719813703936, 459.1649025577612)">
+    <circle r="20" style="fill: rgb(44, 160, 44);"></circle>
+    <title></title>
+    <text dx="15" dy="20">Post</text>
+    <text dx="15" dy="40" style="font-size : x-small"></text>
+  </g>
+  <g class="node" transform="translate(710.1555460362705, 384.51915598966616)">
+    <circle r="20" style="fill: rgb(44, 160, 44);"></circle>
+    <title>browserUsed:content:creationDate:id:language:length:locationIP</title>
+    <text dx="15" dy="20">Post</text>
+    <text dx="15" dy="40" style="font-size : x-small">browserUsed:content:creat...</text>
+  </g>
+  <g class="node" transform="translate(947.0419687012001, 779.8780854264088)">
+    <circle r="20" style="fill: rgb(44, 160, 44);"></circle>
+    <title>browserUsed:creationDate:id:imageFile:length:locationIP</title>
+    <text dx="15" dy="20">Post</text>
+    <text dx="15" dy="40" style="font-size : x-small">browserUsed:creationDate:...</text>
+  </g>
+  <g class="node" transform="translate(869.6567045323123, 557.3294865188044)">
+    <circle r="20" style="fill: rgb(214, 39, 40);"></circle>
+    <title>/</title>
+    <text dx="15" dy="20">Tag</text>
+    <text dx="15" dy="40" style="font-size : x-small">/</text>
+  </g>
+  <g class="node" transform="translate(529.8370654448485, 617.7175071185998)">
+    <circle r="20" style="fill: rgb(214, 39, 40);"></circle>
+    <title>id:name:url</title>
+    <text dx="15" dy="20">Tag</text>
+    <text dx="15" dy="40" style="font-size : x-small">id:name:url</text>
+  </g>
+  <g class="node" transform="translate(521.0909592608741, 891.2138628571889)">
+    <circle r="20" style="fill: rgb(148, 103, 189);"></circle>
+    <title></title>
+    <text dx="15" dy="20">TagClass</text>
+    <text dx="15" dy="40" style="font-size : x-small"></text>
+  </g>
+  <g class="node" transform="translate(226.748628452403, 1127.6249044032588)">
+    <circle r="20" style="fill: rgb(148, 103, 189);"></circle>
+    <title>id:name:url</title>
+    <text dx="15" dy="20">TagClass</text>
+    <text dx="15" dy="40" style="font-size : x-small">id:name:url</text>
+  </g>
+  <g class="node" transform="translate(1118.6565849868527, 349.05873720105785)">
+    <circle r="20" style="fill: rgb(140, 86, 75);"></circle>
+    <title></title>
+    <text dx="15" dy="20">Person</text>
+    <text dx="15" dy="40" style="font-size : x-small"></text>
+  </g>
+  <g class="node" transform="translate(1139.6341002639433, 28.238149619711763)">
+    <circle r="20" style="fill: rgb(140, 86, 75);"></circle>
+    <title>birthday:browserUsed:creationDate:firstName:gender:id:lastName:locationIP</title>
+    <text dx="15" dy="20">Person</text>
+    <text dx="15" dy="40" style="font-size : x-small">birthday:browserUsed:crea...</text>
+  </g>
+  <g class="node" transform="translate(1304.0800318681938, 462.13139546015276)">
+    <circle r="20" style="fill: rgb(227, 119, 194);"></circle>
+    <title></title>
+    <text dy="0" dx="20">Place</text>
+    <text dx="15" dy="40" style="font-size : x-small"></text>
+  </g>
+  <g class="node" transform="translate(1601.8452105327594, 617.3654281663826)">
+    <circle r="20" style="fill: rgb(227, 119, 194);"></circle>
+    <title>id:name:type:url</title>
+    <text dx="15" dy="20">Place</text>
+    <text dx="15" dy="40" style="font-size : x-small">id:name:type:url</text>
+  </g>
+  <g class="node" transform="translate(885.6741905308592, 300.80582881361545)">
+    <circle r="20" style="fill: rgb(127, 127, 127);"></circle>
+    <title></title>
+    <text dx="15" dy="20">Forum</text>
+    <text dx="15" dy="40" style="font-size : x-small"></text>
+  </g>
+  <g class="node" transform="translate(626.4297579960288, 45.01973182871747)">
+    <circle r="20" style="fill: rgb(127, 127, 127);"></circle>
+    <title>creationDate:id:title</title>
+    <text dx="15" dy="20">Forum</text>
+    <text dx="15" dy="40" style="font-size : x-small">creationDate:id:title</text>
+  </g>
+</svg>

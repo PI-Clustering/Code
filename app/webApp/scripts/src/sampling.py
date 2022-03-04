@@ -4,18 +4,17 @@
 import random
 from termcolor import colored
 from .node import Graph, Node
-from math import ceil
+from numpy.random import binomial
+from ..settings import global_variable
 
-
-def sampling(graph, boolean, percent):
-    if not boolean:
-        return graph
-
-    # get the number of occurrences of each node in a variable
+def sampling(graph, percent):
     new_graph = Graph()
-
+    unused = dict()
     for node in graph.get_nodes():
-        new_graph.add_node(node, int(graph.occurs(
-            node)*percent/100.))
-
+        nb = binomial(graph.occurs(node), percent/100.)
+        if nb != 0:
+            new_graph.add_node(node, nb)
+        if nb != graph.occurs(node):
+            unused[node] = graph.occurs(node)  - nb
+    global_variable("unused", unused)
     return new_graph

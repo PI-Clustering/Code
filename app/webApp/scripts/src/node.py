@@ -9,6 +9,9 @@ class Node:
 
     def get_labels(self) -> Set[str]:
         return self._labels
+    
+    def get_properties(self) -> Set[str]:
+        return self._proprety
 
     def get_proprety(self) -> Set[str]:
         return self._proprety
@@ -20,6 +23,16 @@ class Node:
         mot += "  |   Property : "
         for p in self._proprety:
             mot += p + ", "
+        return mot
+    
+    def __repr__(self) -> str:
+        mot = "Labels : "
+        for l in self._labels:
+            mot += l + ", "
+        mot += "  |   Property : "
+        for p in self._proprety:
+            mot += p + ", "
+        mot += "\n"
         return mot
     
     def __eq__(self, other):

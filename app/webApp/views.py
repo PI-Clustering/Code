@@ -6,6 +6,7 @@ import random
 from typing import Any, Dict, List, Tuple
 from django.http import HttpResponse
 from django.views import View
+from django.views.generic import ListView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -18,9 +19,13 @@ from django.http import HttpResponse, JsonResponse, FileResponse
 
 import csv
 from .scripts.driver import get_benchmark
-from .models import Benchmark
-from .forms import UploadFileForm, ParametersForm
+from .models import Benchmark, DataPoint
+from .forms import UploadFileForm, ParametersForm, NodesForm
 from .scripts.src.main import algorithm_script
+from .scripts.src.incremental_scheme import run_add_node
+
+class BenchmarkListView(ListView):
+    model = Benchmark
 
 
 def some_view(request):
@@ -45,6 +50,9 @@ def edge_csv(request):
     response = FileResponse(open("webApp/scripts/graph/edge.csv","rb"))
     return response
 
+def bench_jpg(request):
+    response = FileResponse(open("webApp/scripts/graph/bench.jpg","rb"))
+    return response
 def handle_uploaded_file(f):
     with open('some/file/name.txt', 'wb+') as destination:
         for chunk in f.chunks():
@@ -173,6 +181,24 @@ def AddDummyData():
         )
 
 
+def AddNode(request):
+    if request.method == 'POST':
+        form = NodesForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            # Do something
+            # run_function(data)
+            run_add_node(data)
+            # redirect to a new URL:
+            return HttpResponseRedirect('/Results')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = NodesForm()
+
+    return render(request, 'webApp/form_nodes.html', {'form': form})
+
+
 def RunAlgo(request):
     if request.method == 'POST':
         form = ParametersForm(request.POST)
@@ -181,9 +207,6 @@ def RunAlgo(request):
             # execute query on Neo...
             # make this async
             results = algorithm_script(data)
-            # Create entry in database
-            # algo_type = bm['algo'], size = bm['size'], run_time = bm['time'])
-            # AddDummyData()
             # redirect to a new URL:
             return HttpResponseRedirect('/Results')
 
