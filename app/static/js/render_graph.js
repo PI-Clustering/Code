@@ -96,7 +96,7 @@ d3.csv('/node.csv', function (d) {
           .strength(1)
           .links(dlinks)
       )
-      .force('charge', d3.forceManyBody().strength(0))
+      .force('charge', d3.forceManyBody().strength(-10000))
       .force('center', d3.forceCenter(width / 2, height / 2))
       .on('tick', update);
 
