@@ -10,7 +10,6 @@ class Benchmark(models.Model):
     t_cluster = models.DecimalField(max_digits=5, decimal_places=2)
     t_write = models.DecimalField(max_digits=5, decimal_places=2)
 
-
     def __str__(self):
         return self.algo_type + self.data_set
 

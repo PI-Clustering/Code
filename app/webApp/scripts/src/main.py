@@ -21,7 +21,7 @@ from ...models import Benchmark, DataPoint
 from ..settings import global_variable
 
 
-def algorithm_script(params: Dict[str, str]) -> Dict[str, float]:
+def algorithm_script(params: Dict[str, str]):
     
     print(colored("Schema inference using Gaussian Mixture Model clustering on PG\n", "red"))
 

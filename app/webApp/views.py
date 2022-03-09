@@ -18,11 +18,12 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, JsonResponse, FileResponse
 
 import csv
-from .scripts.driver import get_benchmark
 from .models import Benchmark, DataPoint
 from .forms import UploadFileForm, ParametersForm, NodesForm
 from .scripts.src.main import algorithm_script
 from .scripts.src.incremental_scheme import run_add_node
+from .scripts.db import get_data
+
 
 class BenchmarkListView(ListView):
     model = Benchmark
@@ -42,17 +43,22 @@ def some_view(request):
 
     return response
 
+
 def node_csv(request):
-    response = FileResponse(open("webApp/scripts/graph/node.csv","rb"))
+    response = FileResponse(open("webApp/scripts/graph/node.csv", "rb"))
     return response
+
 
 def edge_csv(request):
-    response = FileResponse(open("webApp/scripts/graph/edge.csv","rb"))
+    response = FileResponse(open("webApp/scripts/graph/edge.csv", "rb"))
     return response
 
+
 def bench_jpg(request):
-    response = FileResponse(open("webApp/scripts/graph/bench.jpg","rb"))
+    response = FileResponse(open("webApp/scripts/graph/bench.jpg", "rb"))
     return response
+
+
 def handle_uploaded_file(f):
     with open('some/file/name.txt', 'wb+') as destination:
         for chunk in f.chunks():
@@ -222,56 +228,11 @@ def Dashboard(request):
     return render(request, "webApp/dashboard.html")
 
 
-def generate_data() -> Any:
-
-    own_ami: List[Tuple[int, float]]
-    hannah_ami: List[Tuple[int, float]]
-    hbscan_ami: List[Tuple[int, float]]
-    own_time: List[Tuple[int, float]]
-    hannah_time: List[Tuple[int, float]]
-    hbscan_time: List[Tuple[int, float]]
-    own_ami = []
-    hannah_ami = []
-    hbscan_ami = []
-    own_time = []
-    hannah_time = []
-    hbscan_time = []
-    for i in range(500):
-        own_ami.append((i, 0.98 - exp(-i / 100) + 0.02 * random.random()))
-        hannah_ami.append((i, 0.95 - exp(-i / 200) + 0.05 * random.random()))
-        hbscan_ami.append((i, 0.95 - exp(-i / 150) + 0.05 * random.random()))
-        own_time.append((i, exp(i / 500)))
-        hannah_time.append((i, exp(i / 200)))
-        hbscan_time.append((i, exp(i / 650)))
-
-    my_dict = {
-        "ami": {
-            "own": own_ami,
-            "hana": hannah_ami,
-            "hbscan": hbscan_ami
-        },
-        "time": {
-            "own": own_time,
-            "hana": hannah_time,
-            "hbscan": hbscan_time
-        }
-    }
-
-    return my_dict
-
-
 def get_chart_data(request):
 
     # https://simpleisbetterthancomplex.com/tutorial/2020/01/19/how-to-use-chart-js-with-django.html
 
-    # bms = Benchmark.objects.all()
-    # queryset = Benchmark.objects.values('algo_type').annotate(
-    #     country_population=Sum('population')).order_by('-country_population')
-    # for entry in queryset:
-    #     labels.append(entry['country__name'])
-    #     data.append(entry['country_population'])
-
-    data = generate_data()
+    data = get_data()
 
     return JsonResponse(data)
 
