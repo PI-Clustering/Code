@@ -28,15 +28,21 @@ def get_data():
             'data': []
         }
         ar = {
-            'name': key,
+            'name': str(key) + " - ari",
+            'data': []
+        }
+        am = {
+            'name': str(key) + " - ami",
             'data': []
         }
         for value in series_by_dataset[key]:
             print(value)
             t['data'].append((value[0], value[3]))  # it_no,t_cum
-            ar['data'].append([value[0], value[4], value[5]])  # it_no,ari
+            ar['data'].append((value[0], value[4]))  # it_no,ari
+            am['data'].append((value[0], value[5]))  # it_no,ari
         time_series.append(t)
         ari_series.append(ar)
+        ari_series.append(am)
 
     series = {
         "time": time_series,
