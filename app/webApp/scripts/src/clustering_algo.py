@@ -15,6 +15,7 @@ from ...models import Benchmark, DataPoint
 from ..settings import global_variable
 
 from .node import Node, Graph, Cluster
+from .debug import print_cutting_value, print_id_son
 
 def clustering(graph, nb_cluster):
 
@@ -25,6 +26,7 @@ def clustering(graph, nb_cluster):
     cluster._nodes = graph._node_occurs
     # warnings.filterwarnings("ignore")
     # iterate through each different sets of labels
+    
     for lab_set in graph.get_sets_labels():
         new_cluster = Cluster()
         correct_nodes = dict()
@@ -53,6 +55,7 @@ def rec_clustering(cluster, nb_cluster=2):
 
     global_cluster = global_variable("cluster")
 
+
     t = time()
     b = deepcopy(global_cluster)
     global_variable("history").append((t, b))
@@ -73,17 +76,20 @@ def rec_clustering(cluster, nb_cluster=2):
     computed_measures, ecrasage = to_format(similarities_dict, correct_nodes)
 
     # BayesianGaussianMixture cannot cluter one node
-    if len(correct_nodes) >= nb_cluster:
+    if len(set(x[0] for x in computed_measures)) >= nb_cluster:
 
         # Train the model with some parameters to speed the process
-        bgmm = BayesianGaussianMixture(
-            n_components=nb_cluster, tol=1, max_iter=10).fit(computed_measures)
+        bgmm = BayesianGaussianMixture(n_components=nb_cluster, tol=1, max_iter=10).fit(computed_measures)
         predictions = bgmm.predict(computed_measures)
 
         # variable to keep track on the index of the node in the list 'predictions'
         j = 0
         new_clusters = [Cluster("Oh") for _ in range(nb_cluster)]
         cluster._cutting_values = cutting_value(computed_measures, predictions)
+        
+        #print(computed_measures, "\n\n", predictions, "\n\n", cluster._cutting_values, "\n\n\n\n")
+        
+        #print(set(x[0] for x in computed_measures), "\n", set(predictions), "\n", cluster._cutting_values, "\n\n\n\n")
         # iterate through each different nodes in this dataset
         for node in correct_nodes:
             amount = correct_nodes[node] // (10**ecrasage)
@@ -108,10 +114,21 @@ def rec_clustering(cluster, nb_cluster=2):
             if set_cluster != set():
                 # search for more subclusters in this subcluster
                 cluster.add_son(new_clusters[i])
+                s = len(cluster.get_son())
                 rec_clustering(new_clusters[i], nb_cluster)
             else:
+                raise NotImplementedError
                 cluster._cutting_values.pop(i)
+        
+        # print(id(cluster))
+        # print_id_son(global_cluster)
+        # print("\n\n")
 
+
+        #print_cutting_value(cluster)
+        #print(cluster.get_son())
+        #print(cluster._cutting_values)
+        #print("\n")
 
 def max_labs_props(correct_node, n=1):
     # create a fictive node, which should be in the middle of the data set
@@ -180,9 +197,9 @@ def to_format(similarities_dict, nodes):
 
 def cutting_value(distances, prediction):
     """ Calculate what are the floating values that are the separation between the different clusters."""
-    n = max(prediction)
+    n = max(prediction) + 1
 
-    res = [0]*(n+1)
+    res = [0 for _ in range(n)]
     for i in range(len(distances)):
         if distances[i][0] > res[prediction[i]]:
             res[prediction[i]] = distances[i][0]
@@ -193,10 +210,14 @@ def cutting_value(distances, prediction):
 def dist(a, b):
     """ Compute a similiarity measure value between two node"""
 
-    s = len(a.get_labels().intersection(b.get_labels())) + \
-        len(a.get_proprety().intersection(b.get_proprety()))
+    string_a = " ".join(a.get_labels().union(a.get_proprety()))
+    string_b = " ".join(b.get_labels().union(b.get_proprety()))
 
-    return 1-2*s / (len(a.get_labels()) + len(a.get_proprety()) + len(b.get_labels()) + len(b.get_proprety()))
+    return dice_coefficient(string_a, string_b)
+    #s = len(a.get_labels().intersection(b.get_labels())) + \
+    #    len(a.get_proprety().intersection(b.get_proprety()))
+
+    #return 1-2*s / (len(a.get_labels()) + len(a.get_proprety()) + len(b.get_labels()) + len(b.get_proprety()))
 
 
 def dice_coefficient(a, b):

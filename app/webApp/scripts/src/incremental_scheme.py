@@ -1,7 +1,12 @@
 import numpy as np
 import random
 
+import csv
+import os 
+
 from sklearn.semi_supervised import LabelSpreading
+
+from webApp.scripts.src.debug import print_dict_node
 
 from .eval_quality import eval_quality
 from .clustering_algo import *
@@ -10,6 +15,8 @@ from copy import deepcopy
 from ...models import Benchmark, DataPoint
 from ..settings import global_variable
 from .storing import storing
+
+from .debug import *
 
 def run_add_node(data):
     
@@ -51,8 +58,8 @@ def run_add_node(data):
         labs = set()
         props = set()
         for node in nodes:
-            labs.union(node.get_labels())
-            props.union(node.get_properties())
+            labs = labs.union(node.get_labels())
+            props = props.union(node.get_properties())
         
         add_data = dict()
         for _ in range(nb_nodes):
@@ -88,6 +95,7 @@ def run_add_node(data):
     t = time()
     global_variable("time_start", t)
     if data['method'] == "incremental":
+        print(add_data)
         list_add_node = []
         for node in add_data:
             list_add_node += [node]*add_data[node]
@@ -105,11 +113,12 @@ def run_add_node(data):
 
     elif data['method'] == 'exact':
         add_node_exact(add_data)
+        print_dict_node(global_variable("cluster"))
 
     step2 = time() - t
 
     t = time()
-    storing(global_variable("cluster"), None, name_data)
+    storing_incr(global_variable("cluster"), global_variable("edges"))
     if data['evaluate']:
         eval_quality()
     step3 = time() - t
@@ -126,6 +135,10 @@ def run_add_node(data):
 def add_node(node):
     """ This function add a node to a cluster (it has to be the main one). """
 
+    bm = global_variable("bm")
+    Benchmark.objects.filter(pk=bm.pk).update(n_iterations = bm.n_iterations + 1)
+    bm.refresh_from_db()
+
     cluster = global_variable("cluster")
     cluster.add_node(node)
     cluster._modification += 1
@@ -134,6 +147,9 @@ def add_node(node):
 
     fils = cluster.get_son()
     first_cluster = cluster._cutting_values
+    
+    print(node)
+    print(first_cluster)
 
     if cluster._modification / sum(cluster.get_nodes().values()) < 0.1:
         for i in range(len(first_cluster)):
@@ -152,7 +168,11 @@ def add_node(node):
 
 def add_node_rec(cluster, node):
     """This function goes recursivly to insert a node, and only take subclusters ( created with gmm, not by the lab_set )  """
-    print(1)
+    
+    bm = global_variable("bm")
+    Benchmark.objects.filter(pk=bm.pk).update(n_iterations = bm.n_iterations + 1)
+    bm.refresh_from_db()
+
     t = time()
     b = deepcopy(global_variable("cluster"))
     global_variable("history").append((t, b))
@@ -167,7 +187,7 @@ def add_node_rec(cluster, node):
     print(cuts)
     print(list_son)
 
-    if cuts != []:
+    if len(list_son)>0:
 
         # We set this value in order to be sure to find a place for the node
         cuts[0] = 0
@@ -177,15 +197,17 @@ def add_node_rec(cluster, node):
                 add_node_rec(list_son[i], node)
                 break
 
-        raise Exception(
-            "We shouldn't be in this situation, as the minimum distance, 0, is supposed to be reached")
 
-
-def add_node_exact(dict_node):
+def add_node_exact(dict_node, nb_cluster = 2):
     """
     The point of this function is to insert a node, exactly as if we were recomputing everything,
     computing only the part we didn't already compute.
     """
+
+    bm = global_variable("bm")
+    Benchmark.objects.filter(pk=bm.pk).update(n_iterations = bm.n_iterations + 1)
+    bm.refresh_from_db()
+
     cluster = global_variable("cluster")
 
     pre_computed = dict()
@@ -206,6 +228,7 @@ def add_node_exact(dict_node):
             if first_cluster[i].issubset(node.get_labels()):
                 node_to_add[node] = dict_node[node]
         add_node_exact_rec(fils[i], node_to_add)
+        fils[i]._name = ":".join(list(first_cluster[i]))
 
     for node in dict_node:
         labs = node.get_labels()
@@ -223,16 +246,17 @@ def add_node_exact(dict_node):
             new_cluster._name = ":".join(list(labs))
 
     return cluster
+ 
 
+def add_node_exact_rec(cluster, pre_computed, nb_cluster = 2):
 
-def add_node_exact_rec(cluster, pre_computed):
+    bm = global_variable("bm")
+    Benchmark.objects.filter(pk=bm.pk).update(n_iterations = bm.n_iterations + 1)
+    bm.refresh_from_db()
 
     t = time()
     b = deepcopy(global_variable("cluster"))
     global_variable("history").append((t, b))
-
-
-    nb_cluster = len(cluster.get_son())
 
     correct_nodes = cluster.get_nodes()
     ref_node = max_labs_props(correct_nodes)
@@ -243,10 +267,12 @@ def add_node_exact_rec(cluster, pre_computed):
 
     computed_measures, ecrasage = to_format(similarities_dict, correct_nodes)
 
+    print(1)
+
     if len(correct_nodes) >= nb_cluster and nb_cluster > 0:
 
-        bgmm = BayesianGaussianMixture(
-            n_components=nb_cluster, tol=1, max_iter=10).fit(computed_measures)
+        print(len(computed_measures))
+        bgmm = BayesianGaussianMixture(n_components=nb_cluster, tol=1, max_iter=10).fit(computed_measures)
         predictions = bgmm.predict(computed_measures)
 
         # variable to keep track on the index of the node in the list 'predictions'
@@ -260,7 +286,6 @@ def add_node_exact_rec(cluster, pre_computed):
                 if node in new_clusters[predictions[j]]._nodes:
                     new_clusters[predictions[j]]._nodes[node] += 10**ecrasage
                 else:
-                    print("&", end="")
                     new_clusters[predictions[j]]._nodes[node] = 10**ecrasage
                 j += 1
 
@@ -277,9 +302,13 @@ def add_node_exact_rec(cluster, pre_computed):
             id = frozenset(new_clusters[i].get_nodes().items())
             if id in pre_computed:
                 cluster.add_son(pre_computed[id])
+                print(7)
             elif len(id) > 0:
                 cluster.add_son(new_clusters[i])
+                print(8)
                 add_node_exact_rec(new_clusters[i], pre_computed)
+            else:
+                print(9)
                 
 
                 
@@ -292,7 +321,12 @@ def get_all_cluster(cluster,res):
         get_all_cluster(son, res)
 
 def add_node_hybrid(node):
-    """Insert a node in our cluster not recalculating GMM as lon as the reference node shoudl not change"""
+    """Insert a node in our cluster not recalculating GMM as long as the reference node shoudl not change"""
+
+    bm = global_variable("bm")
+    Benchmark.objects.filter(pk=bm.pk).update(n_iterations = bm.n_iterations + 1)
+    bm.refresh_from_db()
+
     cluster = global_variable("cluster")
     cluster.add_node(node)
     cluster.add_node(node)
@@ -308,6 +342,10 @@ def add_node_hybrid(node):
 
 
 def add_node_hybrid_rec(cluster, node):
+
+    bm = global_variable("bm")
+    Benchmark.objects.filter(pk=bm.pk).update(n_iterations = bm.n_iterations + 1)
+    bm.refresh_from_db()
 
     t = time()
     b = deepcopy(global_variable("cluster"))
@@ -338,3 +376,245 @@ def add_node_hybrid_rec(cluster, node):
 
     else:
         rec_clustering(cluster)
+
+
+
+
+
+# Now we are going to do the storing for the incremental graphs
+
+def storing_incr(cluster, edges):
+    global old_node, old_edge, dict_ind
+    dirname = os.path.dirname(__file__)
+    with open(os.path.join(dirname, "../graph/node.csv")) as f:
+        reader = csv.reader(f, delimiter=',')
+    
+        old_node = np.array(list(reader))
+    
+
+    with open(os.path.join(dirname, "../graph/edge.csv")) as f:
+        reader = csv.reader(f, delimiter=',')
+    
+        old_edge = np.array(list(reader))
+
+    run_clusters = []
+    i = 1
+
+    main_node = dict()
+    cluster_list = [cluster]
+    esubtype = []
+
+    dict_ind = dict() #This dictionnary shall store the link between the previous and the current indexes
+
+    with open(os.path.join(dirname, "../graph/node.csv"), "w")as f:
+        writer = csv.writer(f)
+        header = ["id", "labels", "properties", "depth", "number", "new", "old_number"]
+        writer.writerow(header)
+
+        # iterate through each basic type clusters
+        for basic_type in cluster.get_son():
+            parent_id = i
+            dict_ind[i] = i
+            data_line = [str(parent_id)]  # line id
+            labels = basic_type.get_name()
+
+            data_line.append(labels)  # labels
+            data_line.append("")  # no properties for base types
+            data_line.append("1")  # the name of the infered type
+            data_line.append("Nan") # nombre de noeud
+            
+            #We then look if we already have seen this line
+            if data_line[1:5] in old_node[:, 1:5]:
+                data_line.append("0") # The cluster is not to be new
+                data_line.append("Nan")
+                ind = np.where(old_node[:, 1:4] == data_line[1:4])[0][0]
+                dict_ind[i] = old_node[ind][0]
+            elif data_line[1:4] in old_node[:, 1:4]: #Then the cluster exists but with different number of nodes
+                ind = np.where(old_node[:, 1:4] == data_line[1:4])
+                data_line.append("1")
+                data_line.append(old_node[ind][4])[0][0]
+                dict_ind[i] = old_node[ind][0]
+            else:
+                data_line.append("2")
+                data_line.append("Nan")
+                
+
+            writer.writerow(data_line)
+            cluster_list.append(basic_type)
+
+            main_node[labels] = i
+
+            h = i
+
+            i += 1
+            k = 2
+
+            # search for subtypes
+            for sous_cluster in basic_type.get_son():
+                if sous_cluster is not None:  # inutile
+
+                    i, _ = rec_storing_incr(sous_cluster, writer,
+                                       i, parent_id, run_clusters, k, cluster_list, esubtype, h)
+
+    with open(os.path.join(dirname, "../graph/edge.csv"), "w") as f:
+
+        writer = csv.writer(f)
+        header = ["id1", "id2", "types", "new"]
+        writer.writerow(header)
+
+        if edges != None:
+
+            N = len(cluster_list)
+            tab = [[0 for _ in range(N)] for _ in range(N)]
+
+            for edge in edges:
+                ln = set(edge["labels(n)"])
+                pn = set(edge["keys(n)"])
+                n = Node(ln,pn)
+                cn = 0
+                for i in range(1,N):
+                    if cluster_list[i].get_son() == [] and n in cluster_list[i]._nodes:
+                        cn = i
+
+                lm = set(edge["labels(m)"])
+                pm = set(edge["keys(m)"])
+                m = Node(lm,pm)
+                cm = 0
+                for i in range(1,N):
+                    if cluster_list[i].get_son() == [] and m in cluster_list[i]._nodes:
+                        cm = i
+
+                t = edge["type(r)"]
+                tab[cn][cm] = t
+
+
+
+            for i in range(1,N):
+                for j in range(1,N):
+                    if tab[i][j] != 0 and i != j:
+                        if [str(dict_ind[i]), str(dict_ind[j]), tab[i][j]] in old_edge[:, :3]:
+                            writer.writerow([str(i),str(j),tab[i][j]], "0")
+                        else:
+                            writer.writerow([str(i),str(j),tab[i][j]], "1")
+
+        for p in esubtype:
+            if [str(dict_ind[p[0]]), str(dict_ind[p[1]]), "SUBTYPE_OF"] in old_edge[:, :3]:
+                writer.writerow([str(p[0]), str(p[1]), "SUBTYPE_OF", "0"])
+            else:
+                writer.writerow([str(p[0]), str(p[1]), "SUBTYPE_OF", "1"])
+
+
+    return "node.csv,edge.csv"
+
+
+def rec_storing_incr(cluster, writer, i, parent_id, run_clusters, k, cluster_list, subtype, h):
+    """ Write clusters into a file
+
+    Parameters
+    ----------
+    distinct_labels : Python list
+        A list of labels
+        Its format is : ['Label1', 'Label2', 'Label3', ...]
+    labs_sets : Python list of list
+        A list of all labels sets
+        Its format is : [['Label 1','Label2'],['Label1'],['Label3'],...]
+    all_clusters : Python list of sets
+        Each set of this list represents a different cluster,
+        they may contain one element or more,
+        an element is a string node that was clustered in this cluster
+        Its format is : [{'Label1 prop1', 'Label1', 'Label1 prop1 prop2'}, {'Label3', 'Label3 prop1 prop4'}, ...]
+
+    Returns
+    -------
+    file : String
+        Name of the file clusters were written into.
+
+    """
+    global old_node, old_edge
+
+    all_labels = set()
+    all_properties = set()
+    always_labels = set()
+    always_properties = set()
+
+    j = True
+
+    # iterate through each node that forms the cluster
+    for node in cluster.get_nodes():
+        cur_labels = node.get_labels()
+        cur_properties = node.get_proprety()
+
+        all_labels = all_labels.union(cur_labels)
+        all_properties = all_properties.union(cur_properties)
+
+        if j:
+            always_labels = cur_labels.union(set())
+            always_properties = cur_properties.union(set())
+        j = False
+
+        always_labels = always_labels.intersection(cur_labels)
+        always_properties = always_properties.intersection(cur_properties)
+
+    # identify optionnal labels and properties with the always_labels et and always_properties
+    optional_labels = all_labels-always_labels
+    optional_properties = all_properties-always_properties
+
+    # add a question mark for optionnal labels and properties
+    if optional_labels != set():
+        labels = ":".join(sorted(list(always_labels)))+":?" + \
+            ":?".join(sorted(list(optional_labels)))
+    else:
+        labels = ":".join(sorted(list(always_labels)))
+
+    if optional_properties != set():
+        properties = ":".join(sorted(list(always_properties))) + \
+            ":?"+":?".join(sorted(list(optional_properties)))
+    else:
+        properties = ":".join(sorted(list(always_properties)))
+
+    # if the formed cluster does not exist
+    if labels+properties not in run_clusters:
+
+        subtype.append((i,h))
+        # line id
+        data_line = [str(i)]
+        data_line.append(labels)
+        data_line.append(properties)
+        data_line.append(str(k))
+        data_line.append(str(cluster.get_number_node())) # nombre de noeuds
+        
+        if data_line[1:5] in old_node[:, 1:5]:
+            data_line.append("0") # The cluster is not to be new
+            data_line.append("Nan")
+            ind = np.where(old_node[:, 1:4] == data_line[1:4])[0][0]
+            dict_ind[i] = old_node[ind][0]
+        elif data_line[1:4] in old_node[:, 1:4]: #Then the cluster exists but with different number of nodes
+            ind = np.where(old_node[:, 1:4] == data_line[1:4])
+            data_line.append("1")
+            data_line.append(old_node[ind][4])[0][0]
+            dict_ind[i] = old_node[ind][0]
+        else:
+            data_line.append("2")
+            data_line.append("Nan")
+        
+        
+
+        writer.writerow(data_line)
+        cluster_list.append(cluster)
+        
+
+        run_clusters.append(labels+properties)
+
+        h = i
+        k += 1
+
+        i += 1
+
+        # search for more subtypes
+        for sous_cluster in cluster.get_son():
+            if sous_cluster is not None:  # inutile
+                i, _ = rec_storing_incr(sous_cluster, writer, i,
+                                   parent_id, run_clusters, k, cluster_list, subtype, h)
+
+    return i, k
+

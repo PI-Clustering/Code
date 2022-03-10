@@ -23,7 +23,7 @@ def storing(cluster, edges, name):
 
     with open(os.path.join(dirname, "../graph/node.csv"), "w")as f:
         writer = csv.writer(f)
-        header = ["id", "labels", "properties", "profondeur", "number"]
+        header = ["id", "labels", "properties", "depth", "number", "new", "old_number"]
         writer.writerow(header)
 
         # iterate through each basic type clusters
@@ -37,6 +37,8 @@ def storing(cluster, edges, name):
             data_line.append("")  # no properties for base types
             data_line.append("1")  # the name of the infered type
             data_line.append(str(basic_type.get_number_node())) # bombre de npeud
+            data_line.append("0") # The cluster is not to be new
+            data_line.append("Nan")
 
             writer.writerow(data_line)
             cluster_list.append(basic_type)
@@ -58,7 +60,7 @@ def storing(cluster, edges, name):
     with open(os.path.join(dirname, "../graph/edge.csv"), "w") as f:
 
         writer = csv.writer(f)
-        header = ["id1", "id2", "types"]
+        header = ["id1", "id2", "types", "new"]
         writer.writerow(header)
 
         if edges != None:
@@ -91,10 +93,10 @@ def storing(cluster, edges, name):
             for i in range(1,N):
                 for j in range(1,N):
                     if tab[i][j] != 0 and i != j:
-                        writer.writerow([str(i),str(j),tab[i][j]])
+                        writer.writerow([str(i),str(j),tab[i][j]], "0")
 
         for p in esubtype:
-            writer.writerow([str(p[0]), str(p[1]), "SUBTYPE_OF"])
+            writer.writerow([str(p[0]), str(p[1]), "SUBTYPE_OF", "0"])
 
 
     return "node.csv,edge.csv"
@@ -172,7 +174,10 @@ def rec_storing(cluster, writer, i, parent_id, run_clusters, k, cluster_list, su
         data_line.append(labels)
         data_line.append(properties)
         data_line.append(str(k))
-        data_line.append(str(cluster.get_number_node())) # bombre de npeud
+        data_line.append(str(cluster.get_number_node())) # nombre de noeud
+        data_line.append("0") # The cluster is not to be new
+        data_line.append("Nan")
+        
 
         writer.writerow(data_line)
         cluster_list.append(cluster)

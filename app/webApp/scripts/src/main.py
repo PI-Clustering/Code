@@ -20,9 +20,10 @@ from .eval_quality import eval_quality
 from ...models import Benchmark, DataPoint
 from ..settings import global_variable
 
+from .debug import *
 
 def algorithm_script(params: Dict[str, str]):
-    
+
     print(colored("Schema inference using Gaussian Mixture Model clustering on PG\n", "red"))
 
     #{'dataset': 'ldbc', 'method': 'k-mean', 'has_limit': False, 'limit_to': 5, 'use_incremental': False, 'nb_subcluster': 1}
@@ -115,6 +116,7 @@ def algorithm_script(params: Dict[str, str]):
     graph, edges = lecture_graph(driver, params['query_edge'])
     t1f = time.perf_counter()
 
+    global_variable("edges", edges)
 
     step1 = t1f - t1  # time to complete step 1
     print(colored("Queries are done.", "green"))
@@ -167,6 +169,7 @@ def algorithm_script(params: Dict[str, str]):
     
     Benchmark.objects.filter(pk=bm.pk).update(t_pre = step1+steps, t_cluster = step2, t_write = step3)
 
+    print_dict_node(cluster)
 
     return {
         "t_pre": step1,

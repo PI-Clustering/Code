@@ -17,11 +17,13 @@ class Node:
         return self._proprety
 
     def __str__(self) -> str:
+        labs = sorted(list(self._labels))
+        n = sorted(list(self._labels))
         mot = "Labels : "
-        for l in self._labels:
+        for l in labs:
             mot += l + ", "
         mot += "  |   Property : "
-        for p in self._proprety:
+        for p in n:
             mot += p + ", "
         return mot
     
