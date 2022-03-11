@@ -95,7 +95,6 @@ def run_add_node(data):
     t = time()
     global_variable("time_start", t)
     if data['method'] == "incremental":
-        print(add_data)
         list_add_node = []
         for node in add_data:
             list_add_node += [node]*add_data[node]
@@ -113,7 +112,6 @@ def run_add_node(data):
 
     elif data['method'] == 'exact':
         add_node_exact(add_data)
-        print_dict_node(global_variable("cluster"))
 
     step2 = time() - t
 
@@ -370,10 +368,6 @@ def add_node_hybrid_rec(cluster, node):
             if d >= cuts[i]:
                 add_node_rec(list_son[i], node)
                 break
-
-        raise Exception(
-            "We shouldn't be in this situation, as the minimum distance, 0, is supposed to be reached")
-
     else:
         rec_clustering(cluster)
 
@@ -421,18 +415,18 @@ def storing_incr(cluster, edges):
             data_line.append(labels)  # labels
             data_line.append("")  # no properties for base types
             data_line.append("1")  # the name of the infered type
-            data_line.append("Nan") # nombre de noeud
+            data_line.append(str(cluster.get_number_node())) # nombre de noeud
             
             #We then look if we already have seen this line
-            if data_line[1:5] in old_node[:, 1:5]:
+            if data_line[1:5] in old_node[:, 1:5].tolist():
                 data_line.append("0") # The cluster is not to be new
                 data_line.append("Nan")
-                ind = np.where(old_node[:, 1:4] == data_line[1:4])[0][0]
+                ind = old_node[:, 1:5].tolist().index(data_line[1:5])
                 dict_ind[i] = old_node[ind][0]
-            elif data_line[1:4] in old_node[:, 1:4]: #Then the cluster exists but with different number of nodes
-                ind = np.where(old_node[:, 1:4] == data_line[1:4])
+            elif data_line[1:4] in old_node[:, 1:4].tolist(): #Then the cluster exists but with different number of nodes
+                ind = old_node[:, 1:4].tolist().index( data_line[1:4] )
                 data_line.append("1")
-                data_line.append(old_node[ind][4])[0][0]
+                data_line.append(old_node[ind][4])
                 dict_ind[i] = old_node[ind][0]
             else:
                 data_line.append("2")
@@ -492,13 +486,13 @@ def storing_incr(cluster, edges):
             for i in range(1,N):
                 for j in range(1,N):
                     if tab[i][j] != 0 and i != j:
-                        if [str(dict_ind[i]), str(dict_ind[j]), tab[i][j]] in old_edge[:, :3]:
-                            writer.writerow([str(i),str(j),tab[i][j]], "0")
+                        if [str(dict_ind[i]), str(dict_ind[j]), tab[i][j]] in old_edge[:, :3].tolist():
+                            writer.writerow([str(i),str(j),tab[i][j], "0"])
                         else:
-                            writer.writerow([str(i),str(j),tab[i][j]], "1")
+                            writer.writerow([str(i),str(j),tab[i][j], "1"])
 
         for p in esubtype:
-            if [str(dict_ind[p[0]]), str(dict_ind[p[1]]), "SUBTYPE_OF"] in old_edge[:, :3]:
+            if [str(dict_ind[p[0]]), str(dict_ind[p[1]]), "SUBTYPE_OF"] in old_edge[:, :3].tolist():
                 writer.writerow([str(p[0]), str(p[1]), "SUBTYPE_OF", "0"])
             else:
                 writer.writerow([str(p[0]), str(p[1]), "SUBTYPE_OF", "1"])
@@ -531,6 +525,8 @@ def rec_storing_incr(cluster, writer, i, parent_id, run_clusters, k, cluster_lis
 
     """
     global old_node, old_edge
+
+    dict_ind[i]=i
 
     all_labels = set()
     all_properties = set()
@@ -583,20 +579,19 @@ def rec_storing_incr(cluster, writer, i, parent_id, run_clusters, k, cluster_lis
         data_line.append(str(k))
         data_line.append(str(cluster.get_number_node())) # nombre de noeuds
         
-        if data_line[1:5] in old_node[:, 1:5]:
+        if data_line[1:5] in old_node[:, 1:5].tolist():
             data_line.append("0") # The cluster is not to be new
             data_line.append("Nan")
-            ind = np.where(old_node[:, 1:4] == data_line[1:4])[0][0]
+            ind = old_node[:, 1:5].tolist().index(data_line[1:5])
             dict_ind[i] = old_node[ind][0]
-        elif data_line[1:4] in old_node[:, 1:4]: #Then the cluster exists but with different number of nodes
-            ind = np.where(old_node[:, 1:4] == data_line[1:4])
+        elif data_line[1:4] in old_node[:, 1:4].tolist(): #Then the cluster exists but with different number of nodes
+            ind = old_node[:, 1:4].tolist().index( data_line[1:4] )
             data_line.append("1")
-            data_line.append(old_node[ind][4])[0][0]
+            data_line.append(old_node[ind][4])
             dict_ind[i] = old_node[ind][0]
         else:
             data_line.append("2")
-            data_line.append("Nan")
-        
+            data_line.append("Nan")      
         
 
         writer.writerow(data_line)

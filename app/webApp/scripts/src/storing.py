@@ -93,7 +93,7 @@ def storing(cluster, edges, name):
             for i in range(1,N):
                 for j in range(1,N):
                     if tab[i][j] != 0 and i != j:
-                        writer.writerow([str(i),str(j),tab[i][j]], "0")
+                        writer.writerow([str(i),str(j),tab[i][j], "0"])
 
         for p in esubtype:
             writer.writerow([str(p[0]), str(p[1]), "SUBTYPE_OF", "0"])
