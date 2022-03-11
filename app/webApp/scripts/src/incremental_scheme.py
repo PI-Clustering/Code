@@ -241,7 +241,7 @@ def add_node_exact(dict_node, nb_cluster = 2):
             cluster._cutting_values.append(labs)
             cluster.add_son(new_cluster)
             rec_clustering(new_cluster)
-            new_cluster._name = ":".join(list(labs))
+            new_cluster._name = ":".join(sorted(list(labs)))
 
     return cluster
  

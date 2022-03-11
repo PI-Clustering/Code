@@ -7,6 +7,9 @@ import hdbscan
 
 import matplotlib.pyplot as plt
 
+import os
+import csv
+
 from ..settings import global_variable
 from .clustering_algo import to_format, max_labs_props, compute_similarities, dist
 from ...models import DataPoint, Benchmark
@@ -50,66 +53,59 @@ def eval_quality():
     # Now, for each iteration, we put together the node according to our clustering. For the nodes non existing in the clustering,
     # We put them in the cluster which contains the clother nodes to them
 
-    k = 1
-    for t,c in global_variable("history"):
-        if k ==1:
+
+    dirname = os.path.dirname(__file__)
+    with open(os.path.join(dirname, "../graph/eval.csv"), "w")as f:
+        writer = csv.writer(f)
+                    
+        k = 1
+        for t,c in global_variable("history"):
+            if k ==1:
+                k+=1
+                continue
+
+            computed_cluster = []
+            get_set_cluster(c, computed_cluster)
+            X = [set() for _ in range(len(computed_cluster))]
+            for node in test_data:
+                if node in cluster.get_nodes():
+                    for i in range(len(computed_cluster)):
+                        if node in computed_cluster[i]:
+                            X[i].add(node)
+                            break
+                else:
+                    node_cloth = min(cluster.get_nodes(), key = lambda t : dist(node, t))
+                    for i in range(len(computed_cluster)):
+                        if node_cloth in computed_cluster[i]:
+                            X[i].add(node)
+                            break
+        
+
+            a = normalized_mutual_info(set(test_data), X, Y)
+            b = adjusted_random_index(set(test_data), X, Y)
+            c = t - global_variable("time_start")+0.0001
+
+            try:
+                DataPoint.objects.create(
+                    benchmark = bm,
+                    iteration_no = k,
+                    ami = a,
+                    f_score = b,
+                    t_pre = 0, #Random values because I can't remove it
+                    t_cluster = c,
+                    t_write = 0.5 #Same as t_pre
+                )
+                
+                writer.writerow([str(k), str(a), str(b), str(c)])
+                
+                ite.append(k)
+                Xlist.append(a)
+                Ylist.append(b)
+                tlist.append(c)
+            except:
+                pass
             k+=1
-            continue
 
-        computed_cluster = []
-        get_set_cluster(c, computed_cluster)
-        X = [set() for _ in range(len(computed_cluster))]
-        for node in test_data:
-            if node in cluster.get_nodes():
-                for i in range(len(computed_cluster)):
-                    if node in computed_cluster[i]:
-                        X[i].add(node)
-                        break
-            else:
-                node_cloth = min(cluster.get_nodes(), key = lambda t : dist(node, t))
-                for i in range(len(computed_cluster)):
-                    if node_cloth in computed_cluster[i]:
-                        X[i].add(node)
-                        break
-    
-
-        a = normalized_mutual_info(set(test_data), X, Y)
-        b = adjusted_random_index(set(test_data), X, Y)
-        c = t - global_variable("time_start")+0.0001
-
-        try:
-            DataPoint.objects.create(
-                benchmark = bm,
-                iteration_no = k,
-                ami = a,
-                f_score = b,
-                t_pre = 0, #Random values because I can't remove it
-                t_cluster = c,
-                t_write = 0.5 #Same as t_pre
-            )
-
-            ite.append(k)
-            Xlist.append(a)
-            Ylist.append(b)
-            tlist.append(c)
-        except:
-            pass
-        k+=1
-
-    plt.subplot(2,1,1)
-    plt.plot(ite, Xlist, label= "Ami with HDBScan")
-    plt.plot(ite, Ylist, label= "EMI with HDBScan")
-    plt.ylim(0,1)
-    plt.legend()
-    plt.title("Evaluation of the cluster at each iteration")
-
-
-    plt.subplot(2,1,2)
-    plt.plot(tlist, ite)
-    plt.xlabel("t (en s)")
-    plt.title("Iteration realized according to time")
-    plt.savefig("./webApp/scripts/graph/bench.jpg")
-    plt.close()
 
 
 def get_set_cluster(cluster, res, lab_set = None):
