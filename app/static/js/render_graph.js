@@ -58,12 +58,13 @@ d3.csv('/node.csv', function (d) {
     node
       .append('circle')
       .attr('r', function(d) { return 4*Math.log(d.number + 1) } )
-      .style('fill', function (d) {
+      .style('fill', function (d, i) {
+        console.log(d.color);
         return colors(d.color);
       });
 
     node.append('title').text(function (d) {
-      return d.size + "Properties:\n" + d.properties.replaceAll(":", "\n");
+      return d.labels + "\n" + d.size + "Properties:\n" + d.properties.replaceAll(":", "\n");
     });
 
     node
