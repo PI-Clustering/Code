@@ -26,24 +26,21 @@
 
         console.log(data);
 
-        Highcharts.setOptions({
-            colors: [
-                '#1e90ff', '#00bfff',
-                'plum', 'orchid',
-                'red', 'orangered',
-                '#a52a2a', '#d2691e',
-                '#24CBE5', '#24CBE5',
-                '#64E572', '#64E572',
-                '#FF9655', '#FF9655',
-                '#FFF263', '#FFF263']
-        });
-
-
         Highcharts.chart('time-progression-chart', {
 
             chart: {
                 zoomType: 'x'
             },
+
+            colors: [
+                '#1e90ff',
+                'plum',
+                'red',
+                '#a52a2a',
+                '#24CBE5',
+                '#64E572',
+                '#FF9655',
+                '#FFF263'],
 
             title: {
                 text: 'Execution time progression by iteration'
@@ -90,6 +87,16 @@
                     scrollPositionX: 1
                 }
             },
+
+            colors: [
+                '#1e90ff', '#00bfff',
+                'plum', 'orchid',
+                'red', 'orangered',
+                '#a52a2a', '#d2691e',
+                '#24CBE5', '#24CBE5',
+                '#64E572', '#64E572',
+                '#FF9655', '#FF9655',
+                '#FFF263', '#FFF263'],
 
             title: {
                 text: 'Adjusted Risk Index / AMI progression by iteration'
