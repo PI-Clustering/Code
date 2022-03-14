@@ -26,6 +26,19 @@
 
         console.log(data);
 
+        Highcharts.setOptions({
+            colors: [
+                '#1e90ff', '#00bfff',
+                'plum', 'orchid',
+                'red', 'orangered',
+                '#a52a2a', '#d2691e',
+                '#24CBE5', '#24CBE5',
+                '#64E572', '#64E572',
+                '#FF9655', '#FF9655',
+                '#FFF263', '#FFF263']
+        });
+
+
         Highcharts.chart('time-progression-chart', {
 
             chart: {
@@ -60,7 +73,8 @@
             },
 
             tooltip: {
-                pointFormat: '{series.name} algo takes <b>{point.y:,.2f}</b><br/> for {point.x} iterations'
+                headerFormat: '<b>{series.name}</b>\n',
+                pointFormat: 'takes <b>{point.y:,.2f}</b><br/> for {point.x} iterations'
             },
 
             series: data.time
@@ -99,7 +113,8 @@
             },
 
             tooltip: {
-                pointFormat: '{series.name} algo has converged to <b>{point.y:,.2f}</b><br/>after {point.x} iterations'
+                headerFormat: '<b>{series.name}</b>\n',
+                pointFormat: 'has converged to <b>{point.y:,.2f}</b><br/>after {point.x} iterations'
             },
 
             yAxis: {

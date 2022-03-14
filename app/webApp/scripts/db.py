@@ -24,15 +24,15 @@ def get_data():
     metrics_series = []
     for key in series_by_dataset.keys():
         t = {
-            'name': key,
+            'name': str(key),
             'data': []
         }
         ar = {
-            'name': str(key) + " - ari",
+            'name': "ARI " + str(key),
             'data': []
         }
         am = {
-            'name': str(key) + " - ami",
+            'name':  "AMI " + str(key),
             'data': []
         }
         for value in series_by_dataset[key]:
