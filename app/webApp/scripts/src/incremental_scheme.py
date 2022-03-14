@@ -80,7 +80,7 @@ def run_add_node(data):
     name_data = bm.data_set
 
     bm = Benchmark.objects.create(
-        algo_type='Adding node with ' + data['method'] + ' method',
+        algo_type=data['method'],
         data_set= name_data,
         n_iterations=0,
         size=sum(global_variable("cluster").get_nodes().values()) + sum(add_data.values()),
@@ -94,7 +94,7 @@ def run_add_node(data):
     global_variable("history", [])
     t = time()
     global_variable("time_start", t)
-    if data['method'] == "incremental":
+    if data['method'] == "I-GMM-D":
         list_add_node = []
         for node in add_data:
             list_add_node += [node]*add_data[node]
@@ -110,7 +110,7 @@ def run_add_node(data):
         for node in list_add_node:
             add_node_hybrid(node)
 
-    elif data['method'] == 'exact':
+    elif data['method'] == 'GMM-D':
         add_node_exact(add_data)
 
     step2 = time() - t
@@ -415,7 +415,7 @@ def storing_incr(cluster, edges):
             data_line.append(labels)  # labels
             data_line.append("")  # no properties for base types
             data_line.append("1")  # the name of the infered type
-            data_line.append(str(cluster.get_number_node())) # nombre de noeud
+            data_line.append(str(basic_type.get_number_node())) # nombre de noeud
             
             #We then look if we already have seen this line
             if data_line[1:5] in old_node[:, 1:5].tolist():

@@ -105,7 +105,7 @@ def algorithm_script(params: Dict[str, str]):
     print("---------------")
 
     bm = Benchmark.objects.create(
-        algo_type='Compute cluster',
+        algo_type='GMM-C',
         data_set=params['dataset'],
         n_iterations=0,
         size=sum(trainning_graph._node_occurs.values()),

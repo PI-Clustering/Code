@@ -12,7 +12,7 @@ DATASET_CHOICES = [
     ('covid-19', 'Covid 19'),
     ('fib25', 'FIB 25')
 ]
-ALGO_CHOICES2 = [('incremental', 'incremental'), ('median', 'median'), ('exact', 'exact')]
+ALGO_CHOICES2 = [('I-GMM-D', 'I-GMM-D'), ('GMM-D', 'GMM-D')]
 
 class ParametersForm(forms.Form):
 
