@@ -13,26 +13,44 @@
 
                 <div class="x_content">
                     <style>
-                        html, body { background-color: white; }
-svg { height:1000px; width:1500px; }
-.edge {
+.graph { height:1000px; width:1500px; }
+#legend {
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: 200px;
+  width: 300px;
+  border: 2px solid black;
+}
+#edge {
   stroke-opacity: 0.6;
   stroke-width: 2px;
 }
                     </style>
                     <svg id="graph">
                         <defs>
-                          <marker id="arrowhead" viewbox="-0 -5 10 10" refX=0 refY=0 orient=auto markerWidth=13 markerHeight=13 orient="auto">
-                            <path d="M 0,-5 L 10 ,0 L 0,5" fill="#999" style="stroke: none" />
+                          <marker id="arrowhead" viewbox="0 -1 2 2" refX=0 refY=0 orient=auto markerWidth=25 markerHeight=25 orient="auto">
+                            <path d="M 0,-1 L 2,0 L 0,1" fill="#999" style="stroke: none" />
                           </marker>
                         </defs>
+                      </svg>
+                      <svg id="legend" viewbox ="0 0 100 100">
+                        <circle r="3" style="fill: #1f77b4" cx=1 cy=25></circle>
+                        <circle r="3" style="fill: #ff7f0e" cx=1 cy=50></circle>
+                        <circle r="3" style="ffill: #2ca02c" cx=1 cy=75>New node</circle>
+                        <text dx = 10 dy = 28>Unchanged node</text>
+                        <text dx = 10 dy = 53>Updated node</text>
+                        <text dx = 10 dy = 78>New node</text>
                       </svg>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src=/static/js/render_graph.js></script>
 {% endblock content %}
 
 
-
+// Blue: unchanged node
+// Orange: updated node
+// Green: new node
 {% block javascripts %}
 {{ block.super }}
 
