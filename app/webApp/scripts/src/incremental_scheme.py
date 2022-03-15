@@ -146,9 +146,6 @@ def add_node(node):
     fils = cluster.get_son()
     first_cluster = cluster._cutting_values
     
-    print(node)
-    print(first_cluster)
-
     if cluster._modification / sum(cluster.get_nodes().values()) < 0.1:
         for i in range(len(first_cluster)):
             if first_cluster[i].issubset(labs):
@@ -181,9 +178,6 @@ def add_node_rec(cluster, node):
 
     cuts = cluster._cutting_values
     list_son = cluster.get_son()
-
-    print(cuts)
-    print(list_son)
 
     if len(list_son)>0:
 
@@ -264,11 +258,8 @@ def add_node_exact_rec(cluster, pre_computed, nb_cluster = 2):
 
     computed_measures, ecrasage = to_format(similarities_dict, correct_nodes)
 
-    print(1)
-
     if len(correct_nodes) >= nb_cluster and nb_cluster > 0:
 
-        print(len(computed_measures))
         bgmm = BayesianGaussianMixture(n_components=nb_cluster, tol=1, max_iter=10).fit(computed_measures)
         predictions = bgmm.predict(computed_measures)
 
@@ -299,13 +290,9 @@ def add_node_exact_rec(cluster, pre_computed, nb_cluster = 2):
             id = frozenset(new_clusters[i].get_nodes().items())
             if id in pre_computed:
                 cluster.add_son(pre_computed[id])
-                print(7)
             elif len(id) > 0:
                 cluster.add_son(new_clusters[i])
-                print(8)
                 add_node_exact_rec(new_clusters[i], pre_computed)
-            else:
-                print(9)
                 
 
                 
