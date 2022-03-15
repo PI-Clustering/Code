@@ -21,30 +21,31 @@ class ParametersForm(forms.Form):
         choices=DATASET_CHOICES,
         label="Which dataset are you using?"
     )
-    use_precomputed = forms.BooleanField(
-        required=False,
-        label="Use precomputed?"
-    )
     limit_to = forms.IntegerField(
         required=False,
         initial=80,
         min_value=1,
         max_value=100,
-        label="How many percent of nodes to limit to?"
+        label="Percentage of node to consider?"
     )
     nb_subcluster = forms.IntegerField(
         required=True,
         initial=2,
         min_value=2,
-        label="How many subcluster"
+        label="Subclusters to be discovered at each iteration"
     )
     query_edge = forms.BooleanField(
         required=False,
-        label="Query edge?"
+        initial=True,
+        label="Include original edge labels"
     )
     evaluate = forms.BooleanField(
         required=False,
-        label="Evaluate the cluster ?"
+        label="Keep track of this cluster evaluation?"
+    )
+    use_precomputed = forms.BooleanField(
+        required=False,
+        label="Or, use precomputed?"
     )
 
 
@@ -63,6 +64,7 @@ class NodesForm(forms.Form):
     )
     use_real_data = forms.BooleanField(
         required=False,
+        initial=True,
         label="Use Real Data?"
     )
     evaluate = forms.BooleanField(

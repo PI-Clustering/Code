@@ -105,7 +105,7 @@ def algorithm_script(params: Dict[str, str]):
     print("---------------")
 
     bm = Benchmark.objects.create(
-        algo_type='GMM-C',
+        algo_type='GMM-S',
         data_set=params['dataset'],
         n_iterations=0,
         size=sum(trainning_graph._node_occurs.values()),
@@ -139,7 +139,6 @@ def algorithm_script(params: Dict[str, str]):
     
     Benchmark.objects.filter(pk=bm.pk).update(t_pre = step1+steps, t_cluster = step2, t_write = step3)
 
-    print_dict_node(cluster)
 
     return {
         "t_pre": step1,

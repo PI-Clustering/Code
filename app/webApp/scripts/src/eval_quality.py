@@ -60,6 +60,7 @@ def eval_quality():
                     
         k = 1
         for t,c in global_variable("history"):
+            print(t)
             if k ==1:
                 k+=1
                 continue
@@ -279,7 +280,6 @@ def normalized_mutual_info(S,U,V):
                     fact_bj = 1
                 else:
                     fact_bj = math.factorial(b_j-ind)
-                print(N, a_i, b_j, ind)
                 EMI += Decimal(math.factorial(N-a_i))/Decimal(math.factorial(N))*Decimal(math.factorial(N-b_j))/Decimal(math.factorial(N-a_i-b_j+ind))*Decimal((ind/N)*math.log(N*ind/(a_i*b_j)))*Decimal(math.factorial(a_i)*math.factorial(b_j))/Decimal(math.factorial(ind)*fact_ai*fact_bj)
              
     EMI = float(EMI)

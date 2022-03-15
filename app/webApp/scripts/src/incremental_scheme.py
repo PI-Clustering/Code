@@ -49,7 +49,7 @@ def run_add_node(data):
                         add_data[node] += nb
                     else:
                         add_data[node] = nb
-    
+
 
     else:
 
@@ -214,34 +214,33 @@ def add_node_exact(dict_node, nb_cluster = 2):
     for node in dict_node:
         cluster.add_node(node, dict_node[node])
 
-    labs = node.get_labels()
+    graph = Graph()
+    dico = cluster.get_nodes()
+    for node in dico:
+        graph.add_node(node, dico[node])
 
-    nodes_cluster = cluster.get_nodes()
-    fils = cluster.get_son()
-    first_cluster = cluster._cutting_values
 
-    for i in range(len(fils)):
-        node_to_add = dict()
-        for node in dict_node:
-            if first_cluster[i].issubset(node.get_labels()):
-                node_to_add[node] = dict_node[node]
-        add_node_exact_rec(fils[i], node_to_add)
-        fils[i]._name = ":".join(list(first_cluster[i]))
+    cluster = Cluster("Main")
+    global_variable("cluster", cluster)
+    cluster._nodes = graph._node_occurs
+    
+    for lab_set in graph.get_sets_labels():
+        new_cluster = Cluster()
+        correct_nodes = dict()
+        # iterate through each different node
+        for node in graph.distinct_node():
 
-    for node in dict_node:
-        labs = node.get_labels()
-        if labs not in cluster._cutting_values:  # That mean we have a new type of node with a new set of label
-            new_cluster = Cluster()
-            correct_nodes = dict()
-            correct_nodes[node] = 1
-            for node_c in nodes_cluster:
-                if labs.issubset(node_c.get_labels()):
-                    correct_nodes[node_c] = nodes_cluster[node_c]
-                    new_cluster._nodes = correct_nodes
-            cluster._cutting_values.append(labs)
+            if lab_set.issubset(node.get_labels()):
+                correct_nodes[node] = graph.occurs(node)
+
+        # search for all subclusters
+        new_cluster._nodes = correct_nodes
+        if len(correct_nodes) != 0:
+            cluster._cutting_values.append(lab_set)
             cluster.add_son(new_cluster)
-            rec_clustering(new_cluster)
-            new_cluster._name = ":".join(sorted(list(labs)))
+            add_node_exact_rec(new_cluster, pre_computed)
+            new_cluster._name = ":".join(list(lab_set))
+
 
     return cluster
  
@@ -317,6 +316,8 @@ def get_all_cluster(cluster,res):
     res[nodes] = deepcopy(cluster)
     for son in cluster.get_son():
         get_all_cluster(son, res)
+
+
 
 def add_node_hybrid(node):
     """Insert a node in our cluster not recalculating GMM as long as the reference node shoudl not change"""
