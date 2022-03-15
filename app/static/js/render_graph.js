@@ -58,13 +58,12 @@ d3.csv('/node.csv', function (d) {
     node
       .append('circle')
       .attr('r', function(d) { return 4*Math.log(d.number + 1) } )
-      .style('fill', function (d, i) {
-        console.log(d.color);
+      .style('fill', function (d) {
         return colors(d.color);
       });
 
     node.append('title').text(function (d) {
-      return d.labels + "\n" + d.size + "Properties:\n" + d.properties.replaceAll(":", "\n");
+      return d.color + d.labels + "\n" + d.size + "Properties:\n" + d.properties.replaceAll(":", "\n");
     });
 
     node
@@ -72,22 +71,12 @@ d3.csv('/node.csv', function (d) {
       .attr('dx', 15)
       .attr('dy', 20)
       .text(function (d) {
+        if (d.labels.length > 25) {
+          return d.labels.slice(0, 25) + '...';
+        }
         return d.labels;
       });
 
-    // node
-    //   .append('text')
-    //   .attr('dx', 15)
-    //   .attr('dy', 40)
-    //   .attr('style', 'font-size : x-small')
-    //   .text(function (d) {
-    //     if (d.properties.length > 25) {
-    //       return d.properties.slice(0, 25) + '...';
-    //     }
-    //     return d.properties;
-    //   });
-    // console.log(dnodes);
-    // console.log(dlinks);
     d3
       .forceSimulation(dnodes)
       .force(
