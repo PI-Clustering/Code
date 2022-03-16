@@ -54,7 +54,7 @@ class NodesForm(forms.Form):
     method = forms.ChoiceField(
         required=True,
         choices=ALGO_CHOICES2,
-        label="Which dataset are you using?"
+        label="Which algorithm to use?"
     )
     how_many = forms.IntegerField(
         required=True,
@@ -69,7 +69,7 @@ class NodesForm(forms.Form):
     )
     evaluate = forms.BooleanField(
         required=False,
-        label="Evaluate the cluster ?"
+        label="Keep track of this cluster evaluation?"
     )
 
 
