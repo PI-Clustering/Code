@@ -39,6 +39,18 @@ d3.csv('/node.csv', function (d) {
         return 'grey';
       });
 
+    var link_text = graph_inner
+      .selectAll('.edge_text')
+      .data(dlinks)
+      .enter()
+      .append('text')
+      .attr('dx', 10)
+      .attr('dy', 10)
+      .text(function (d) {
+        return d.tag;
+      });
+
+
     var node = graph_inner
       .selectAll('.node')
       .data(dnodes)
@@ -51,17 +63,6 @@ d3.csv('/node.csv', function (d) {
       .attr('r', function(d) { return 4*Math.log(d.number + 1) } )
       .style('fill', function (d) {
         return colors[d.color];
-      });
-
-    node
-      .append('circle')
-      .attr('r', function(d) { return 2*Math.log(d.number + 1) } )
-      .style('fill', function (d) {
-        if (d.color == 1) {
-          return colors[0];
-        } else {
-          return "none";
-        }
       });
 
     node.append('title').text(function (d) {
@@ -79,16 +80,6 @@ d3.csv('/node.csv', function (d) {
         return d.labels;
       });
 
-      var link_text = graph_inner
-      .selectAll('.edge_text')
-      .data(dlinks)
-      .enter()
-      .append('text')
-      .attr('dx', 10)
-      .attr('dy', 10)
-      .text(function (d) {
-        return d.tag;
-      });
     d3
       .forceSimulation(dnodes)
       .force(
