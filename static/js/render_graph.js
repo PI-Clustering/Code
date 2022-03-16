@@ -1,10 +1,12 @@
-var colors = d3.scaleOrdinal(d3.schemeCategory10);
+var colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"];
 
-var svg = d3.select('#graph'),
-  width = svg.node().getBoundingClientRect().width,
-  height = svg.node().getBoundingClientRect().height;
-  svg.attr("viewBox", [0, 0, width, height]);
-  g = svg.append("g");
+var legend = d3.select('#legend');
+
+var graph_outer = d3.select('#graph'),
+  width = 1000,
+  height = 1000;
+  graph_outer.attr("viewBox", [0, 0, width, height]);
+  graph_inner = graph_outer.append("g");
 d3.csv('/node.csv', function (d) {
   d.id = +d.id;
   d.name = d.id;
@@ -26,7 +28,7 @@ d3.csv('/node.csv', function (d) {
       });
     }
   }).then(function () {
-    var link = g
+    var link = graph_inner
       .selectAll('.edge')
       .data(dlinks)
       .enter()
@@ -37,18 +39,7 @@ d3.csv('/node.csv', function (d) {
         return 'grey';
       });
 
-    var link_text = g
-      .selectAll('.edge_text')
-      .data(dlinks)
-      .enter()
-      .append('text')
-      // .attr('style', 'font-size : x-small')
-      .text(function (d) {
-        return d.tag;
-      });
-
-
-    var node = g
+    var node = graph_inner
       .selectAll('.node')
       .data(dnodes)
       .enter()
@@ -58,9 +49,19 @@ d3.csv('/node.csv', function (d) {
     node
       .append('circle')
       .attr('r', function(d) { return 4*Math.log(d.number + 1) } )
-      .style('fill', function (d, i) {
-        console.log(d.color);
-        return colors(d.color);
+      .style('fill', function (d) {
+        return colors[d.color];
+      });
+
+    node
+      .append('circle')
+      .attr('r', function(d) { return 2*Math.log(d.number + 1) } )
+      .style('fill', function (d) {
+        if (d.color == 1) {
+          return colors[0];
+        } else {
+          return "none";
+        }
       });
 
     node.append('title').text(function (d) {
@@ -69,25 +70,25 @@ d3.csv('/node.csv', function (d) {
 
     node
       .append('text')
-      .attr('dx', 15)
-      .attr('dy', 20)
+      .attr('dx', function (d) {return 4*Math.log(d.number + 1);})
+      .attr('dy', function (d) {return 4*Math.log(d.number + 1);})
       .text(function (d) {
+        if (d.labels.length > 25) {
+          return d.labels.slice(0, 25) + '...';
+        }
         return d.labels;
       });
 
-    // node
-    //   .append('text')
-    //   .attr('dx', 15)
-    //   .attr('dy', 40)
-    //   .attr('style', 'font-size : x-small')
-    //   .text(function (d) {
-    //     if (d.properties.length > 25) {
-    //       return d.properties.slice(0, 25) + '...';
-    //     }
-    //     return d.properties;
-    //   });
-    // console.log(dnodes);
-    // console.log(dlinks);
+      var link_text = graph_inner
+      .selectAll('.edge_text')
+      .data(dlinks)
+      .enter()
+      .append('text')
+      .attr('dx', 10)
+      .attr('dy', 10)
+      .text(function (d) {
+        return d.tag;
+      });
     d3
       .forceSimulation(dnodes)
       .force(
@@ -112,17 +113,21 @@ d3.csv('/node.csv', function (d) {
           update();
       });
 
-  dragHandler(svg.selectAll(".node"));
-  svg.call(d3.zoom().extent([[0, 0], [width, height]]).scaleExtent([0.1, 10]).on("zoom", zoomed));
+  dragHandler(graph_outer.selectAll(".node"));
+  var zoom = d3.zoom().extent([[0, 0], [width, height]]).scaleExtent([0.1, 10]).on("zoom", zoomed);
+  graph_outer
+    .call(zoom)
+    .call(zoom.scaleBy, 0.25);
   function zoomed({transform}) {
-    g.attr("transform", transform);
+    graph_inner.attr("transform", transform);
   }
     function update() {
       link
       .attr("points", function(d) {
         return [
              d.source.x, d.source.y,
-             d.source.x/4 + 3 * d.target.x/4, d.source.y/4 + 3*d.target.y/4,
+             (d.source.x + 3 * d.target.x) / 4,
+             (d.source.y + 3 * d.target.y) / 4,
              d.target.x, d.target.y
         ].join(',');
       });

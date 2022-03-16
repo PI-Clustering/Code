@@ -49,7 +49,7 @@ def run_add_node(data):
                         add_data[node] += nb
                     else:
                         add_data[node] = nb
-    
+
 
     else:
 
@@ -80,7 +80,7 @@ def run_add_node(data):
     name_data = bm.data_set
 
     bm = Benchmark.objects.create(
-        algo_type='Adding node with ' + data['method'] + ' method',
+        algo_type=data['method'],
         data_set= name_data,
         n_iterations=0,
         size=sum(global_variable("cluster").get_nodes().values()) + sum(add_data.values()),
@@ -94,7 +94,7 @@ def run_add_node(data):
     global_variable("history", [])
     t = time()
     global_variable("time_start", t)
-    if data['method'] == "incremental":
+    if data['method'] == "I-GMM-D":
         list_add_node = []
         for node in add_data:
             list_add_node += [node]*add_data[node]
@@ -110,7 +110,7 @@ def run_add_node(data):
         for node in list_add_node:
             add_node_hybrid(node)
 
-    elif data['method'] == 'exact':
+    elif data['method'] == 'GMM-D':
         add_node_exact(add_data)
 
     step2 = time() - t
@@ -146,9 +146,6 @@ def add_node(node):
     fils = cluster.get_son()
     first_cluster = cluster._cutting_values
     
-    print(node)
-    print(first_cluster)
-
     if cluster._modification / sum(cluster.get_nodes().values()) < 0.1:
         for i in range(len(first_cluster)):
             if first_cluster[i].issubset(labs):
@@ -182,9 +179,6 @@ def add_node_rec(cluster, node):
     cuts = cluster._cutting_values
     list_son = cluster.get_son()
 
-    print(cuts)
-    print(list_son)
-
     if len(list_son)>0:
 
         # We set this value in order to be sure to find a place for the node
@@ -214,34 +208,33 @@ def add_node_exact(dict_node, nb_cluster = 2):
     for node in dict_node:
         cluster.add_node(node, dict_node[node])
 
-    labs = node.get_labels()
+    graph = Graph()
+    dico = cluster.get_nodes()
+    for node in dico:
+        graph.add_node(node, dico[node])
 
-    nodes_cluster = cluster.get_nodes()
-    fils = cluster.get_son()
-    first_cluster = cluster._cutting_values
 
-    for i in range(len(fils)):
-        node_to_add = dict()
-        for node in dict_node:
-            if first_cluster[i].issubset(node.get_labels()):
-                node_to_add[node] = dict_node[node]
-        add_node_exact_rec(fils[i], node_to_add)
-        fils[i]._name = ":".join(list(first_cluster[i]))
+    cluster = Cluster("Main")
+    global_variable("cluster", cluster)
+    cluster._nodes = graph._node_occurs
+    
+    for lab_set in graph.get_sets_labels():
+        new_cluster = Cluster()
+        correct_nodes = dict()
+        # iterate through each different node
+        for node in graph.distinct_node():
 
-    for node in dict_node:
-        labs = node.get_labels()
-        if labs not in cluster._cutting_values:  # That mean we have a new type of node with a new set of label
-            new_cluster = Cluster()
-            correct_nodes = dict()
-            correct_nodes[node] = 1
-            for node_c in nodes_cluster:
-                if labs.issubset(node_c.get_labels()):
-                    correct_nodes[node_c] = nodes_cluster[node_c]
-                    new_cluster._nodes = correct_nodes
-            cluster._cutting_values.append(labs)
+            if lab_set.issubset(node.get_labels()):
+                correct_nodes[node] = graph.occurs(node)
+
+        # search for all subclusters
+        new_cluster._nodes = correct_nodes
+        if len(correct_nodes) != 0:
+            cluster._cutting_values.append(lab_set)
             cluster.add_son(new_cluster)
-            rec_clustering(new_cluster)
-            new_cluster._name = ":".join(sorted(list(labs)))
+            add_node_exact_rec(new_cluster, pre_computed)
+            new_cluster._name = ":".join(list(lab_set))
+
 
     return cluster
  
@@ -265,11 +258,8 @@ def add_node_exact_rec(cluster, pre_computed, nb_cluster = 2):
 
     computed_measures, ecrasage = to_format(similarities_dict, correct_nodes)
 
-    print(1)
-
     if len(correct_nodes) >= nb_cluster and nb_cluster > 0:
 
-        print(len(computed_measures))
         bgmm = BayesianGaussianMixture(n_components=nb_cluster, tol=1, max_iter=10).fit(computed_measures)
         predictions = bgmm.predict(computed_measures)
 
@@ -300,13 +290,9 @@ def add_node_exact_rec(cluster, pre_computed, nb_cluster = 2):
             id = frozenset(new_clusters[i].get_nodes().items())
             if id in pre_computed:
                 cluster.add_son(pre_computed[id])
-                print(7)
             elif len(id) > 0:
                 cluster.add_son(new_clusters[i])
-                print(8)
                 add_node_exact_rec(new_clusters[i], pre_computed)
-            else:
-                print(9)
                 
 
                 
@@ -317,6 +303,8 @@ def get_all_cluster(cluster,res):
     res[nodes] = deepcopy(cluster)
     for son in cluster.get_son():
         get_all_cluster(son, res)
+
+
 
 def add_node_hybrid(node):
     """Insert a node in our cluster not recalculating GMM as long as the reference node shoudl not change"""
@@ -415,7 +403,7 @@ def storing_incr(cluster, edges):
             data_line.append(labels)  # labels
             data_line.append("")  # no properties for base types
             data_line.append("1")  # the name of the infered type
-            data_line.append(str(cluster.get_number_node())) # nombre de noeud
+            data_line.append(str(basic_type.get_number_node())) # nombre de noeud
             
             #We then look if we already have seen this line
             if data_line[1:5] in old_node[:, 1:5].tolist():
