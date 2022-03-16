@@ -21,7 +21,8 @@ def get_data():
         series_by_dataset[key].append(value)
 
     time_series = []
-    metrics_series = []
+    ami_series = []
+    ari_series = []
     for key in series_by_dataset.keys():
         t = {
             'name': str(key),
@@ -41,12 +42,13 @@ def get_data():
             ar['data'].append((value[0], value[4]))  # it_no,ari
             am['data'].append((value[0], value[5]))  # it_no,ari
         time_series.append(t)
-        metrics_series.append(ar)
-        metrics_series.append(am)
+        ari_series.append(ar)
+        ami_series.append(am)
 
     series = {
         "time": time_series,
-        "ari": metrics_series
+        "ari": ari_series,
+        "ami": ami_series
     }
 
     return series
