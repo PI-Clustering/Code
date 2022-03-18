@@ -55,18 +55,25 @@ def run_add_node(data):
 
         old_data = global_variable("cluster")
         nodes = set(old_data.get_nodes())
-        labs = set()
-        props = set()
+        set_labs = set()
         for node in nodes:
-            labs = labs.union(node.get_labels())
-            props = props.union(node.get_properties())
+            set_labs.add(frozenset(node.get_labels()))
+        set_labs = list(set_labs)
+        S = len(set_labs)
+        props = [set() for sl in set_labs]
+
+        for node in nodes:
+            for i in range(S):
+                if set_labs[i].issubset(node.get_labels()):
+                    props[i] = props[i].union(node.get_proprety())
         
+
         add_data = dict()
         for _ in range(nb_nodes):
-            k = np.random.binomial(len(labs), 0.5)
-            lab = set(random.sample(labs, k))
-            k = np.random.binomial(len(props), 0.5)
-            prop = set(random.sample(props, k))
+            k = random.randint(0, S-1)
+            lab = set(set_labs[k])
+            j = np.random.binomial(len(props[k]), 0.5)
+            prop = set(random.sample(props[k], j))
             node = Node(lab, prop)
             if node in add_data:
                 add_data[node] += 1

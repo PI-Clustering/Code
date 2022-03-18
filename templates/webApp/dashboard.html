@@ -9,8 +9,9 @@
 
 
 {% block content %}
-<h1>Chart</h1>
+<h1>Schema Dashboard</h1>
 <div id="time-progression-chart" style="width:100%; height:400px;"></div>
+<div id="ami-progression-chart" style="width:100%; height:400px;"></div>
 <div id="ari-progression-chart" style="width:100%; height:400px;"></div>
 {% endblock content %}
 
@@ -26,12 +27,7 @@
 
         console.log(data);
 
-        Highcharts.chart('time-progression-chart', {
-
-            chart: {
-                zoomType: 'x'
-            },
-
+        Highcharts.setOptions({
             colors: [
                 '#1e90ff',
                 'plum',
@@ -40,7 +36,14 @@
                 '#24CBE5',
                 '#64E572',
                 '#FF9655',
-                '#FFF263'],
+                '#FFF263']
+        });
+
+        Highcharts.chart('time-progression-chart', {
+
+            chart: {
+                zoomType: 'x'
+            },
 
             title: {
                 text: 'Execution time progression by iteration'
@@ -88,18 +91,8 @@
                 }
             },
 
-            colors: [
-                '#1e90ff', '#00bfff',
-                'plum', 'orchid',
-                'red', 'orangered',
-                '#a52a2a', '#d2691e',
-                '#24CBE5', '#24CBE5',
-                '#64E572', '#64E572',
-                '#FF9655', '#FF9655',
-                '#FFF263', '#FFF263'],
-
             title: {
-                text: 'Adjusted Risk Index / AMI progression by iteration'
+                text: 'Adjusted Risk Index'
             },
 
             subtitle: {
@@ -128,7 +121,7 @@
                 min: 0,
                 max: 1,
                 title: {
-                    text: 'ARI/AMI'
+                    text: 'ARI'
                 }
             },
 
@@ -136,6 +129,54 @@
 
         });
 
+
+        Highcharts.chart('ami-progression-chart', {
+
+            chart: {
+                zoomType: 'x',
+                scrollablePlotArea: {
+                    minWidth: 600,
+                    scrollPositionX: 1
+                }
+            },
+
+            title: {
+                text: 'Adjusted Mutual Information'
+            },
+
+            subtitle: {
+                text: 'Source: own simulations'
+            },
+
+            xAxis: {
+                type: 'integer',
+                title: {
+                    text: 'Iteration step'
+                }
+            },
+
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+
+            tooltip: {
+                headerFormat: '<b>{series.name}</b>\n',
+                pointFormat: 'has converged to <b>{point.y:,.2f}</b><br/>after {point.x} iterations'
+            },
+
+            yAxis: {
+                min: 0,
+                max: 1,
+                title: {
+                    text: 'AMI'
+                }
+            },
+
+            series: data.ami
+
+        });
 
     }
 

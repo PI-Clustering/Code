@@ -65,7 +65,7 @@ class NodesForm(forms.Form):
     use_real_data = forms.BooleanField(
         required=False,
         initial=True,
-        label="Use Real Data?"
+        label="Use Real Data?*"
     )
     evaluate = forms.BooleanField(
         required=False,

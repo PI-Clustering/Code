@@ -1,0 +1,16 @@
+id,labels,properties,depth,number,new,old_number
+1,medulla7column_Synapse:Synapse,,1,293047,1,293045
+2,Synapse:medulla7column_Synapse,confidence:distal:location:type,2,121000,0,Nan
+3,Synapse:medulla7column_Synapse,confidence:location:proximal:type,2,171002,1,171000
+4,medulla7column_Segment:Segment:Neuron:Neurons:medulla7column_Neuron,,1,2366,0,Nan
+5,Neuron:Neurons:Segment:medulla7column_Neuron:medulla7column_Segment,bodyId:post:pre:roiInfo:size:status:statusLabel:?cropped:?distal:?instance:?proximal:?type,2,632,0,Nan
+6,Neuron:Neurons:Segment:medulla7column_Neuron:medulla7column_Segment,bodyId:cropped:distal:post:pre:roiInfo:size:status:statusLabel,3,9,0,Nan
+7,medulla7column_Segment:Segment:Neurons,,1,69717,1,69716
+8,Neurons:Segment:medulla7column_Segment,bodyId:post:pre:roiInfo:size:?distal:?proximal,2,22740,2,Nan
+9,Neurons:Segment:medulla7column_Segment:?Neuron:?medulla7column_Neuron,bodyId:post:pre:roiInfo:size:?cropped:?distal:?instance:?proximal:?status:?statusLabel:?type,2,46977,0,Nan
+10,Neurons:Segment:medulla7column_Segment,bodyId:post:pre:roiInfo:size:?cropped:?distal:?instance:?proximal:?status:?statusLabel:?type,3,44210,0,Nan
+11,Neurons:Segment:medulla7column_Segment,bodyId:post:pre:proximal:roiInfo:size:?distal,4,35759,0,Nan
+12,Neurons:Segment:medulla7column_Segment,bodyId:post:pre:roiInfo:size:status:statusLabel:?cropped:?distal:?instance:?proximal:?type,4,8451,0,Nan
+13,Neurons:Segment:medulla7column_Segment,bodyId:cropped:distal:post:pre:roiInfo:size:status:statusLabel,5,3786,0,Nan
+14,Neurons:Segment:medulla7column_Segment:?Neuron:?medulla7column_Neuron,bodyId:post:pre:roiInfo:size:status:statusLabel:?cropped:?distal:?instance:?proximal:?type,3,2767,0,Nan
+15,medulla7column_SynapseSet:SynapseDet:SynapseSet,,1,279226,0,Nan
