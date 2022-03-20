@@ -36,7 +36,8 @@
                 '#24CBE5',
                 '#64E572',
                 '#FF9655',
-                '#FFF263']
+                '#FFF263'],
+                credits:{style:{fontSize: '30px'}}
         });
 
         Highcharts.chart('time-progression-chart', {
@@ -46,30 +47,31 @@
             },
 
             title: {
-                text: 'Execution time progression by iteration'
-            },
-
-            subtitle: {
-                text: 'Source: own simulations'
+                text: 'Execution time progression by iteration',
+                style:{fontSize:'40px'}
             },
 
             yAxis: {
                 title: {
-                    text: 'Execution time, s'
+                    text: 'Execution time, s',
+                    style:{fontSize:'30px'}
                 }
             },
 
             xAxis: {
                 type: 'integer',
                 title: {
-                    text: 'Iteration step'
+                    text: 'Iteration step',
+                    style:{fontSize:'30px'}
                 }
+                
             },
 
             legend: {
                 layout: 'vertical',
                 align: 'right',
-                verticalAlign: 'middle'
+                verticalAlign: 'middle',
+                itemStyle:{fontSize: '20px'}
             },
 
             tooltip: {
@@ -92,24 +94,23 @@
             },
 
             title: {
-                text: 'Adjusted Risk Index'
-            },
-
-            subtitle: {
-                text: 'Source: own simulations'
+                text: 'Adjusted Random Index',
+                style:{fontSize:'40px'}
             },
 
             xAxis: {
                 type: 'integer',
                 title: {
-                    text: 'Iteration step'
+                    text: 'Iteration step',
+                    style:{fontSize:'30px'}
                 }
             },
 
             legend: {
                 layout: 'vertical',
                 align: 'right',
-                verticalAlign: 'middle'
+                verticalAlign: 'middle',
+                itemStyle:{fontSize: '20px'}
             },
 
             tooltip: {
@@ -121,7 +122,8 @@
                 min: 0,
                 max: 1,
                 title: {
-                    text: 'ARI'
+                    text: 'ARI',
+                    style:{fontSize:'30px'}
                 }
             },
 
@@ -141,24 +143,23 @@
             },
 
             title: {
-                text: 'Adjusted Mutual Information'
-            },
-
-            subtitle: {
-                text: 'Source: own simulations'
+                text: 'Adjusted Mutual Information',
+                style:{fontSize:'40px'}
             },
 
             xAxis: {
                 type: 'integer',
                 title: {
-                    text: 'Iteration step'
+                    text: 'Iteration step',
+                    style:{fontSize:'30px'}
                 }
             },
 
             legend: {
                 layout: 'vertical',
                 align: 'right',
-                verticalAlign: 'middle'
+                verticalAlign: 'middle',
+                itemStyle:{fontSize: '20px'}
             },
 
             tooltip: {
@@ -170,7 +171,8 @@
                 min: 0,
                 max: 1,
                 title: {
-                    text: 'AMI'
+                    text: 'AMI',
+                    style:{fontSize:'30px'}
                 }
             },
 

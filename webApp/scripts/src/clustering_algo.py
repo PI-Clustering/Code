@@ -87,10 +87,8 @@ def rec_clustering(cluster, nb_cluster=2):
         new_clusters = [Cluster("Oh") for _ in range(nb_cluster)]
         cluster._cutting_values = cutting_value(computed_measures, predictions)
         
-        #print(computed_measures, "\n\n", predictions, "\n\n", cluster._cutting_values, "\n\n\n\n")
-        
-        #print(set(x[0] for x in computed_measures), "\n", set(predictions), "\n", cluster._cutting_values, "\n\n\n\n")
         # iterate through each different nodes in this dataset
+        # and add it to the new cluster taking into account the prunning
         for node in correct_nodes:
             amount = correct_nodes[node] // (10**ecrasage)
             for i in range(amount):

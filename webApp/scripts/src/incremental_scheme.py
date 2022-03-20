@@ -14,15 +14,18 @@ from .node import *
 from copy import deepcopy
 from ...models import Benchmark, DataPoint
 from ..settings import global_variable
-from .storing import storing
 
 from .debug import *
 
 def run_add_node(data):
-    
+    """
+    The point of this function is, taking as input the paramaters, to add node in the cluster store in the global variable
+    """
     t = time()
 
     nb_nodes = data['how_many']
+
+    #We first get bak / create the data to add
 
     if data["use_real_data"]:
         unused = global_variable("unused")
@@ -31,13 +34,13 @@ def run_add_node(data):
             add_data = dict()
             p = nb_nodes/N
             for node in unused:
-                nb = np.random.binomial(unused[node], p)
+                nb = np.random.binomial(unused[node], p) #We use that to efficiently simulated unfirom random choice
                 if nb != 0:
                     add_data[node] = nb
                     unused[node] -= nb
             global_variable("unused", unused)
 
-        else:
+        else: # if we don't have enough values to add, we add all the one we hvae
             add_data = unused
             global_variable("unused", dict())
             old_data = global_variable("cluster").get_nodes()
@@ -51,7 +54,9 @@ def run_add_node(data):
                         add_data[node] = nb
 
 
-    else:
+    else: #In this case, we have to create our own data to add
+
+        # We will first get all the possible set of labels and the associated possible properties
 
         old_data = global_variable("cluster")
         nodes = set(old_data.get_nodes())
@@ -67,6 +72,7 @@ def run_add_node(data):
                 if set_labs[i].issubset(node.get_labels()):
                     props[i] = props[i].union(node.get_proprety())
         
+        #Then we succesivly take a random possible set of label and a random part of the properties
 
         add_data = dict()
         for _ in range(nb_nodes):
@@ -98,6 +104,8 @@ def run_add_node(data):
 
     global_variable("bm", bm)
 
+    # We then apply the method with the appropriate data
+
     global_variable("history", [])
     t = time()
     global_variable("time_start", t)
@@ -109,7 +117,7 @@ def run_add_node(data):
         for node in list_add_node:
             add_node(node)
 
-    elif data['method'] == "median":
+    elif data['method'] == "median": #Former method, yet removed
         list_add_node = []
         for node in add_data:
             list_add_node += [node]*add_data[node]
@@ -154,6 +162,8 @@ def add_node(node):
     first_cluster = cluster._cutting_values
     
     if cluster._modification / sum(cluster.get_nodes().values()) < 0.1:
+        # If we made too much modification, as the cluster could have change too much,
+        # we recompute everything
         for i in range(len(first_cluster)):
             if first_cluster[i].issubset(labs):
                 add_node_rec(fils[i], node)
@@ -306,6 +316,8 @@ def add_node_exact_rec(cluster, pre_computed, nb_cluster = 2):
 
 
 def get_all_cluster(cluster,res):
+    # All cluster are represented by their dictionnary of node
+    # Thus we get back all their id ti identify them efficiently
     nodes = frozenset(cluster.get_nodes().items())
     res[nodes] = deepcopy(cluster)
     for son in cluster.get_son():
