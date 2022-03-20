@@ -45,7 +45,7 @@ class ParametersForm(forms.Form):
     )
     use_precomputed = forms.BooleanField(
         required=False,
-        label="Or, use precomputed?"
+        label="Or, use preloaded schema?"
     )
 
 

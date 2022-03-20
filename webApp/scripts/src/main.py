@@ -33,7 +33,9 @@ def algorithm_script(params: Dict[str, str]):
     passwd = ""
 
     if params['use_precomputed']:
-    
+        
+        # If we want to use precomputed, we will just copy the precomputed results
+
         dirname = os.path.dirname(__file__)
         
         if (params['dataset'] == 'ldbc'):
@@ -104,6 +106,8 @@ def algorithm_script(params: Dict[str, str]):
 
     print("---------------")
 
+    # We create the run
+
     bm = Benchmark.objects.create(
         algo_type='GMM-S',
         data_set=params['dataset'],
@@ -137,6 +141,7 @@ def algorithm_script(params: Dict[str, str]):
     print(colored("Writing done.", "green"))
     print("Step 3: Identifying subtypes and storing to file was completed in", step3, "s")
     
+    # We update the data of the runs in the database with the time of execution
     Benchmark.objects.filter(pk=bm.pk).update(t_pre = step1+steps, t_cluster = step2, t_write = step3)
 
 

@@ -15,24 +15,31 @@ from .clustering_algo import to_format, max_labs_props, compute_similarities, di
 from ...models import DataPoint, Benchmark
 
 def eval_quality():
+
+    """
+    This funciton, using global variables, will 
+    """
+
     bm = global_variable("bm")
     cluster = global_variable("cluster")
 
     # Let's get the data we will use to test the model
-    N = 10000
+    N = 10000 #We take 10000 node as it is sufficient and efficient enough
     unused = global_variable("unused")
     total_unused = sum(unused.values())
     test_data = dict()
     p = min(N / total_unused,1)
+
+    # We then select almost 10 000 node using probability to simulate efficiently
+    # the uniform choice over all nodes
     for node in unused:
         nb = np.random.binomial(unused[node], p)
         if nb != 0:
             test_data[node] = nb
-            unused[node] -= nb
+            unused[node] -= nb #The data being used, we remove it from the set of unused data
     global_variable("unused", unused)
 
-    Xlist, Ylist, ite, tlist = [], [], [], []
-
+   
     ref_node = max_labs_props(test_data)
     similarities_dict = compute_similarities(test_data, ref_node)
     computed_measures, ecrasage = to_format(similarities_dict, test_data)
@@ -53,68 +60,70 @@ def eval_quality():
     # Now, for each iteration, we put together the node according to our clustering. For the nodes non existing in the clustering,
     # We put them in the cluster which contains the clother nodes to them
 
-
-    dirname = os.path.dirname(__file__)
-    with open(os.path.join(dirname, "../graph/eval.csv"), "w")as f:
-        writer = csv.writer(f)
-                    
-        k = 1
-        for t,c in global_variable("history"):
-            print(t)
-            if k ==1:
-                k+=1
-                continue
-
-            computed_cluster = []
-            get_set_cluster(c, computed_cluster)
-            X = [set() for _ in range(len(computed_cluster))]
-            for node in test_data:
-                if node in cluster.get_nodes():
-                    for i in range(len(computed_cluster)):
-                        if node in computed_cluster[i]:
-                            X[i].add(node)
-                            break
-                else:
-                    node_cloth = min(cluster.get_nodes(), key = lambda t : dist(node, t))
-                    for i in range(len(computed_cluster)):
-                        if node_cloth in computed_cluster[i]:
-                            X[i].add(node)
-                            break
-        
-
-            a = normalized_mutual_info(set(test_data), X, Y)
-            b = adjusted_random_index(set(test_data), X, Y)
-            c = t - global_variable("time_start")+0.0001
-
-            try:
-                DataPoint.objects.create(
-                    benchmark = bm,
-                    iteration_no = k,
-                    ami = a,
-                    f_score = b,
-                    t_pre = 0, #Random values because I can't remove it
-                    t_cluster = c,
-                    t_write = 0.5 #Same as t_pre
-                )
-                
-                writer.writerow([str(k), str(a), str(b), str(c)])
-                
-                ite.append(k)
-                Xlist.append(a)
-                Ylist.append(b)
-                tlist.append(c)
-            except:
-                pass
+    k = 1
+    # We go over all the remembered cluster
+    for t,c in global_variable("history"):
+        print(k)
+        if k ==1:
             k+=1
+            continue
+
+        computed_cluster = []
+        get_set_cluster(c, computed_cluster)
+        X = [set() for _ in range(len(computed_cluster))]
+        for node in test_data:
+            if node in cluster.get_nodes(): #If the node is in the cluster, we already know the cluster
+                for i in range(len(computed_cluster)):
+                    if node in computed_cluster[i]:
+                        X[i].add(node)
+                        break
+            else: #Otherwise, we put it in the cluster which have the closest node
+                node_cloth = min(cluster.get_nodes(), key = lambda t : dist(node, t))
+                for i in range(len(computed_cluster)):
+                    if node_cloth in computed_cluster[i]:
+                        X[i].add(node)
+                        break
+    
+
+        a = normalized_mutual_info(set(test_data), X, Y)
+        b = adjusted_random_index(set(test_data), X, Y)
+        c = t - global_variable("time_start")+0.0001
+
+        try:
+            DataPoint.objects.create(
+                benchmark = bm,
+                iteration_no = k,
+                ami = a,
+                f_score = b,
+                t_pre = 0, #Random values because I can't remove it
+                t_cluster = c,
+                t_write = 0.5 #Same as t_pre
+            )
+            
+        except:
+            pass
+        k+=1
 
 
 
 def get_set_cluster(cluster, res, lab_set = None):
 
-    if lab_set == None:
+    """
+    This function returns a list of set of nodes, which is the clustering from the variable "cluster"
+    
+    Parameters
+    ----------
+    cluster : Cluster variable which gives the clustering
+    res : The resultat where we append the clusters
+    lab_set : Set of string
+    """
+
+    if lab_set == None: #That's is when we are at the root of the cluster
+        # We will put in this cluster all the nodes not yet present in the subclusters
         s = set(cluster.get_nodes())
         sons = cluster.get_son()
         for i in range(len(cluster._cutting_values)):
+            #We recursively get back the clusters
             get_set_cluster(sons[i], res, cluster._cutting_values[i])
             try:
                 s = s - res[-1]
@@ -122,7 +131,10 @@ def get_set_cluster(cluster, res, lab_set = None):
                 pass
         if s != set():
             res.append(s)
-    else:
+    else: # We are here in a "normal" cluster, not at the root
+        # We get back all the nodes with the right set of labels
+        # (as a node can be in several clusters, we choose the one with the better set of label)
+        # which are not in the subclusters
         s = set(filter( lambda node : node.get_labels() == lab_set ,cluster.get_nodes()))
         for c in cluster.get_son():
             get_set_cluster(c, res, lab_set)
