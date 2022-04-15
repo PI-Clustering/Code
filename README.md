@@ -26,9 +26,9 @@ Django : 4.0
 
 Download the csv files from the databases folder.
 
-Follow these instructions to import LDBC, fib25 or mb6 (steps 1 to 6 are already done): https://github.com/connectome-neuprint/neuPrint/blob/master/neo4j_desktop_load.md
+Follow [these instructions](https://github.com/connectome-neuprint/neuPrint/blob/master/neo4j_desktop_load.md) to import LDBC, fib25 or mb6 (steps 1 to 6 are already done).
 
-At step 10 of the previous page for LDBC and fib25 you will need a command to load the data.
+At step 10 of the previous page for LDBC and fib25, you will need a command to load the data.
 
 For LDBC :
 ```
