@@ -52,3 +52,26 @@ $python manage.py collectstatic
 $python manage.py runserver
 ```
 Then, in your browser, go to [http://localhost:8000](http://localhost:8000).
+
+## Project structure
+
+The graphic part is in templates/
+
+The part to render the graph is in static/
+
+The IO part of the wepApp is in wepApp/
+
+The algithmic part of the programm is in the webApp/scripts/src/
+
+main.py : main file for GMM-S launching the different part of the algorithm
+node.py : datastructure used in the project
+lecture_graph.py : in GMM-S, read the graph
+sampling.py : do the sampling of the read graph
+clustering_algo.py : run the GMM-S algorithm
+storing.py : store the inferred graph of the GMM-S algorithm
+incremental_scheme.py : run the GMM-D and the I-GMM-D from getting the data to the output
+eval_quality.py : do the evaluation of cluster stored in the global variables
+../settings.py : used to store global variable over the whole programm
+
+The raw output is in webApp/scripts/db.py and webApp/graph/
+
