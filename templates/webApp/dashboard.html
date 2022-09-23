@@ -30,14 +30,14 @@
         Highcharts.setOptions({
             colors: [
                 '#1e90ff',
-                'plum',
                 'red',
+                '#006400',
+                '#FF9655',
+                'plum',
                 '#a52a2a',
                 '#24CBE5',
-                '#64E572',
-                '#FF9655',
                 '#FFF263'],
-                credits:{style:{fontSize: '30px'}}
+                credits:{style:{fontSize: '0px'}}
         });
 
         Highcharts.chart('time-progression-chart', {
@@ -52,17 +52,19 @@
             },
 
             yAxis: {
+                labels: {style:{fontSize:'25px'}},
                 title: {
                     text: 'Execution time, s',
-                    style:{fontSize:'30px'}
+                    style:{fontSize:'40px'}
                 }
             },
 
             xAxis: {
+                labels: {style:{fontSize:'25px'}},
                 type: 'integer',
                 title: {
                     text: 'Iteration step',
-                    style:{fontSize:'30px'}
+                    style:{fontSize:'40px'}
                 }
                 
             },
@@ -71,7 +73,7 @@
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'middle',
-                itemStyle:{fontSize: '20px'}
+                itemStyle:{fontSize: '30px'}
             },
 
             tooltip: {
@@ -99,10 +101,11 @@
             },
 
             xAxis: {
+                labels: {style:{fontSize:'25px'}},
                 type: 'integer',
                 title: {
                     text: 'Iteration step',
-                    style:{fontSize:'30px'}
+                    style:{fontSize:'40px'}
                 }
             },
 
@@ -110,7 +113,7 @@
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'middle',
-                itemStyle:{fontSize: '20px'}
+                itemStyle:{fontSize: '30px'}
             },
 
             tooltip: {
@@ -119,11 +122,12 @@
             },
 
             yAxis: {
+                labels: {style:{fontSize:'25px'}},
                 min: 0,
                 max: 1,
                 title: {
                     text: 'ARI',
-                    style:{fontSize:'30px'}
+                    style:{fontSize:'40px'}
                 }
             },
 
@@ -148,10 +152,11 @@
             },
 
             xAxis: {
+                labels: {style:{fontSize:'25px'}},
                 type: 'integer',
                 title: {
                     text: 'Iteration step',
-                    style:{fontSize:'30px'}
+                    style:{fontSize:'40px'}
                 }
             },
 
@@ -159,7 +164,7 @@
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'middle',
-                itemStyle:{fontSize: '20px'}
+                itemStyle:{fontSize: '30px'}
             },
 
             tooltip: {
@@ -168,11 +173,12 @@
             },
 
             yAxis: {
+                labels: {style:{fontSize:'25px'}},
                 min: 0,
                 max: 1,
                 title: {
                     text: 'AMI',
-                    style:{fontSize:'30px'}
+                    style:{fontSize:'40px'}
                 }
             },
 
