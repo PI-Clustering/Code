@@ -18,6 +18,8 @@ Use pip to install these 3 python modules :
 - django==4.1.1
 - joblib==0.11 (to do after hdbscan)
 
+(and eventually matplolib and numpy if not already installed)
+
 Neo4j :
 - Neo4j Desktop 1.4.8
 - Add local DBMS with a Neo4j version of 3.5.3 or more
@@ -28,9 +30,11 @@ Django : 4.0
 
 Download the csv files from the databases folder.
 
-Follow [these instructions](https://github.com/connectome-neuprint/neuPrint/blob/master/neo4j_desktop_load.md) to import LDBC, fib25 or mb6 (steps 1 to 6 are already done).
+Follow [these instructions](https://github.com/connectome-neuprint/neuPrint/blob/master/neo4j_desktop_load.md) to import LDBC or fib25 
 
-At step 10 of the previous page for LDBC and fib25, you will need a command to load the data.
+At step 5, put neo4j as graph name and 1234 as password
+At step 10, of the previous page for LDBC and fib25, you will need a command to load the data.
+At step 11, `mb6.db` can be change by `ldbc.db` or `fib25.db` and (but apparently not necessary) also add the line `dbms.connector.bolt.listen_address=:7687`
 
 For LDBC :
 ```
