@@ -61,23 +61,23 @@ Then, in your browser, go to [http://localhost:8000](http://localhost:8000).
 
 ## Project structure
 
-* Graphical part: templates/
+* Graphical part: `templates/`
 
-* Graph rendering: static/
+* Graph rendering: `static/`
 
-* IO part of the wepApp: wepApp/
+* IO part of the wepApp: `wepApp/`
 
 * Algorithmic part of the program: webApp/scripts/src/
 
-main.py : main file for GMM-S launching the different part of the algorithm
-node.py : datastructure used in the project
-lecture_graph.py : in GMM-S, read the graph
-sampling.py : do the sampling of the read graph
-clustering_algo.py : run the GMM-S algorithm
-storing.py : store the inferred graph of the GMM-S algorithm
-incremental_scheme.py : run the GMM-D and the I-GMM-D from getting the data to the output
-eval_quality.py : do the evaluation of cluster stored in the global variables
-../settings.py : used to store global variable over the whole programm
+  * main.py : main file for GMM-S launching the different part of the algorithm
+  * node.py : datastructure used in the project
+  * lecture_graph.py : in GMM-S, read the graph
+  * sampling.py : do the sampling of the read graph
+  * clustering_algo.py : run the GMM-S algorithm
+  * storing.py : store the inferred graph of the GMM-S algorithm
+  * incremental_scheme.py : run the GMM-D and the I-GMM-D from getting the data to the output
+  * eval_quality.py : do the evaluation of cluster stored in the global variables
+  * ../settings.py : used to store global variable over the whole programm
 
-The raw output is in webApp/scripts/db.py and webApp/graph/
+The raw output is in `webApp/scripts/db.py` and `webApp/graph/`
 
