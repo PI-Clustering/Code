@@ -67,17 +67,17 @@ Then, in your browser, go to [http://localhost:8000](http://localhost:8000).
 
 * IO part of the wepApp: `wepApp/`
 
-* Algorithmic part of the program: webApp/scripts/src/
+* Algorithmic part of the program: `webApp/scripts/src/`
 
-  * main.py : main file for GMM-S launching the different part of the algorithm
-  * node.py : datastructure used in the project
-  * lecture_graph.py : in GMM-S, read the graph
-  * sampling.py : do the sampling of the read graph
-  * clustering_algo.py : run the GMM-S algorithm
-  * storing.py : store the inferred graph of the GMM-S algorithm
-  * incremental_scheme.py : run the GMM-D and the I-GMM-D from getting the data to the output
-  * eval_quality.py : do the evaluation of cluster stored in the global variables
-  * ../settings.py : used to store global variable over the whole programm
+  * `main.py` : entry point for the GMM-S, static schema discovery algorithm
+  * `node.py` : main data structures 
+  * `lecture_graph.py` : reading the graph for GMM-S
+  * `sampling.py` : sampling the read graph
+  * `clustering_algo.py` : running the GMM-S algorithm
+  * `storing.py` : storing the graph inferred by the GMM-S algorithm
+  * `incremental_scheme.py` : running the GMM-D and the I-GMM-D dynamic schema discovery algorithms
+  * `eval_quality.py` : evaluating the quality of the computed clustering
+  * `../settings.py` : storing global variables
 
 The raw output is in `webApp/scripts/db.py` and `webApp/graph/`
 
