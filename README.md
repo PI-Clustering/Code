@@ -61,13 +61,13 @@ Then, in your browser, go to [http://localhost:8000](http://localhost:8000).
 
 ## Project structure
 
-The graphic part is in templates/
+* Graphical part: templates/
 
-The part to render the graph is in static/
+* Graph rendering: static/
 
-The IO part of the wepApp is in wepApp/
+* IO part of the wepApp: wepApp/
 
-The algithmic part of the programm is in the webApp/scripts/src/
+* Algorithmic part of the program: webApp/scripts/src/
 
 main.py : main file for GMM-S launching the different part of the algorithm
 node.py : datastructure used in the project
