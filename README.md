@@ -79,6 +79,8 @@ For fib25 :
 ./bin/neo4j-admin import --database=fib25.db --nodes=import/Neuprint_Meta_fib25.csv --nodes=import/Neuprint_Neurons_fib25.csv --relationships=ConnectsTo=import/Neuprint_Neuron_Connections_fib25.csv --nodes=import/Neuprint_SynapseSet_fib25.csv --relationships=ConnectsTo=import/Neuprint_SynapseSet_to_SynapseSet_fib25.csv --relationships=Contains=import/Neuprint_Neuron_to_SynapseSet_fib25.csv --nodes=import/Neuprint_Synapses_fib25.csv --relationships=SynapsesTo=import/Neuprint_Synapse_Connections_fib25.csv --relationships=Contains=import/Neuprint_SynapseSet_to_Synapses_fib25.csv
 ```
 
+## The Covid-19 graph codebase is accessible here: [Cord-19](https://github.com/covidgraph/data_cord19).
+
 ## Running the project
 
 ```console
