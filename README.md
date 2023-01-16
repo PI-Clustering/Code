@@ -35,7 +35,7 @@
 
 ## About the project
 
-DiscoPG is a property graph schema discovery and exploration system. It leverages hierarchical clustering, using a Gaussian Mixture Model (GMM), which accounts for both node labels and properties, i.e., the [GMMSchema method](https://openproceedings.org/2022/conf/edbt/paper-139.pdf).
+DiscoPG is a property graph schema discovery and exploration system. It leverages hierarchical clustering, using a Gaussian Mixture Model (GMM), which accounts for both node labels and properties, i.e., the [GMMSchema method](https://openproceedings.org/2022/conf/edbt/paper-139.pdf), whose code is here [GMMSchema codebase](https://github.com/naussicaa/pg-schemainference/blob/main/README.md).
 DiscoPG consists of the following modules:
 
    * **Schema Discovery**:  Given a property graph dataset, the system performs data pre-processing and applies a GMM-based schema discovery algorithm, GMM-S.  Upon updates to the base input dataset, the computed schema can be maintained using either an incremental algorithm (I-GMM-D) or an algorithm performing memoization-based recomputation (GMM-D).
