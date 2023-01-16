@@ -1,5 +1,38 @@
 # DiscoPG: Property Graph Schema and Exploration
 
+## To cite us, use the following BibTex references:
+
+```
+@article{DBLP:journals/pvldb/BonifatiDMGJLP22,
+  author    = {Angela Bonifati and
+               Stefania{-}Gabriela Dumbrava and
+               Emile Martinez and
+               Fatemeh Ghasemi and
+               Malo Jaffr{\'{e}} and
+               Pacome Luton and
+               Thomas Pickles},
+  title     = {DiscoPG: Property Graph Schema Discovery and Exploration},
+  journal   = {Proc. {VLDB} Endow.},
+  volume    = {15},
+  number    = {12},
+  pages     = {3654--3657},
+  year      = {2022}
+}
+```
+
+```
+@inproceedings{DBLP:conf/edbt/BonifatiDM22,
+  author    = {Angela Bonifati and
+               Stefania Dumbrava and
+               Nicolas Mir},
+  title     = {Hierarchical Clustering for Property Graph Schema Discovery},
+  booktitle = {{EDBT}},
+  pages     = {2:449--2:453},
+  publisher = {OpenProceedings.org},
+  year      = {2022}
+}
+```
+
 ## About the project
 
 DiscoPG is a property graph schema discovery and exploration system. It leverages hierarchical clustering, using a Gaussian Mixture Model (GMM), which accounts for both node labels and properties, i.e., the [GMMSchema method](https://openproceedings.org/2022/conf/edbt/paper-139.pdf).
